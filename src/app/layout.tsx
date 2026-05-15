@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Deft | Premium Web Design Agency in Bangkok",
     description: "Your business, beautifully online. Premium, fast, and affordable websites for local businesses in Thailand.",
-    url: "https://deft.agency",
+    url: "https://deft-websites.vercel.app",
     siteName: "Deft",
     locale: "en_US",
     type: "website",
