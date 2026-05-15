@@ -8,12 +8,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useBooking } from "@/components/providers/BookingProvider";
 import { trackEvent } from "@/lib/tracking";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function Navbar() {
   const { t, lang, setLang, isEn } = useLanguage();
   const { openBooking } = useBooking();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,23 +25,6 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const scrollTo = (id: string) => {
-    setMobileMenuOpen(false);
-    const el = document.getElementById(id);
-    if (el) {
-      const offset = 80; // navbar height
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = el.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth"
-      });
-    }
-  };
 
   return (
     <nav
@@ -51,23 +37,28 @@ export function Navbar() {
     >
       <div className="mx-auto w-full max-w-[1100px] px-6 md:px-10 flex items-center justify-between">
         {/* Logo */}
-        <button
-          onClick={() => scrollTo("hero")}
+        <Link
+          href="/"
           className="font-heading font-semibold text-2xl tracking-tight text-brand-teal hover:opacity-80 transition-opacity"
         >
           Deft
-        </button>
+        </Link>
 
         {/* Desktop Nav */}
         <div className="hidden lg:flex items-center gap-1">
           {t.nav.links.map((link, idx) => (
-            <button
+            <Link
               key={idx}
-              onClick={() => scrollTo(t.nav.ids[idx])}
-              className="px-3 py-2 text-[14px] font-medium text-brand-muted hover:text-brand-teal transition-colors rounded-md hover:bg-brand-teal/5"
+              href={t.nav.hrefs[idx]}
+              className={cn(
+                "px-3 py-2 text-[14px] font-medium transition-colors rounded-md hover:bg-brand-teal/5",
+                pathname === t.nav.hrefs[idx]
+                  ? "text-brand-teal"
+                  : "text-brand-muted hover:text-brand-teal"
+              )}
             >
               {link}
-            </button>
+            </Link>
           ))}
           
           <div className="w-[1px] h-5 bg-brand-border mx-3" />
@@ -127,13 +118,19 @@ export function Navbar() {
               
               <div className="flex flex-col p-6 gap-2 overflow-y-auto">
                 {t.nav.links.map((link, idx) => (
-                  <button
+                  <Link
                     key={idx}
-                    onClick={() => scrollTo(t.nav.ids[idx])}
-                    className="text-left px-4 py-3 text-[16px] font-medium text-brand-text hover:bg-brand-teal/5 hover:text-brand-teal rounded-lg transition-colors"
+                    href={t.nav.hrefs[idx]}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      "text-left px-4 py-3 text-[16px] font-medium rounded-lg transition-colors",
+                      pathname === t.nav.hrefs[idx]
+                        ? "text-brand-teal bg-brand-teal/5"
+                        : "text-brand-text hover:bg-brand-teal/5 hover:text-brand-teal"
+                    )}
                   >
                     {link}
-                  </button>
+                  </Link>
                 ))}
               </div>
 

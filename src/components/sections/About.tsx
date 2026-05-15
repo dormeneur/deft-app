@@ -6,7 +6,7 @@ import { Container, Section } from "@/components/ui/layout-wrappers";
 import { GraduationCap, MapPin, Zap, Store } from "lucide-react";
 import { motion } from "framer-motion";
 
-export function About() {
+export function About({ className }: { className?: string }) {
   const { t } = useLanguage();
 
   const detailsIcons = [
@@ -17,7 +17,7 @@ export function About() {
   ];
 
   return (
-    <Section id="about" bg="white">
+    <Section id="about" bg="white" className={className}>
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
           

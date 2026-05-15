@@ -5,12 +5,13 @@ import { useLanguage } from "@/context/LanguageContext";
 import { Container, Section } from "@/components/ui/layout-wrappers";
 import { Play } from "lucide-react";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
-export function VideoDemo() {
+export function VideoDemo({ className }: { className?: string }) {
   const { t } = useLanguage();
 
   return (
-    <Section id="demo" bg="white" className="py-24">
+    <Section id="demo" bg="white" className={cn("py-24", className)}>
       <Container className="flex flex-col items-center text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

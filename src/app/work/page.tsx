@@ -1,20 +1,21 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { Hero } from "@/components/sections/Hero";
-import { Services } from "@/components/sections/Services";
-import { HowItWorks } from "@/components/sections/HowItWorks";
-import { Pricing } from "@/components/sections/Pricing";
+import { VideoDemo } from "@/components/sections/VideoDemo";
 import { Testimonials } from "@/components/sections/Testimonials";
+import { Portfolio } from "@/components/sections/Portfolio";
 import { FloatingContact } from "@/components/ui/FloatingContact";
 
-export default function Home() {
+export const metadata = {
+  title: "Our Work",
+  description: "See how Deft transforms Thai businesses with premium web design. Featured case studies and demo videos.",
+};
+
+export default function WorkPage() {
   return (
     <main className="flex-1 flex flex-col">
       <Navbar />
-      <Hero />
-      <Services />
-      <HowItWorks />
-      <Pricing />
+      <Portfolio />
+      <VideoDemo className="pt-32" />
       <Testimonials />
       <Footer />
       <FloatingContact />

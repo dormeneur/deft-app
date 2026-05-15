@@ -25,7 +25,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function Contact() {
+export function Contact({ className }: { className?: string }) {
   const { t } = useLanguage();
   const { openBooking } = useBooking();
   const [isSending, setIsSending] = useState(false);
@@ -69,7 +69,7 @@ export function Contact() {
   };
 
   return (
-    <Section id="contact" bg="muted">
+    <Section id="contact" bg="muted" className={className}>
       <Container>
         <div className="text-center mb-16 md:mb-24">
           <motion.h2 

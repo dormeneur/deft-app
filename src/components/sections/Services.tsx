@@ -15,7 +15,7 @@ const iconMap: Record<string, React.ReactNode> = {
   Database: <Database className="w-6 h-6" />,
 };
 
-export function Services() {
+export function Services({ className }: { className?: string }) {
   const { t } = useLanguage();
 
   const containerVariants = {
@@ -32,7 +32,7 @@ export function Services() {
   };
 
   return (
-    <Section id="services" bg="muted">
+    <Section id="services" bg="muted" className={className}>
       <Container>
         <div className="text-center mb-16">
           <motion.h2 

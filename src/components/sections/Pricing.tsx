@@ -8,11 +8,11 @@ import { Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-export function Pricing() {
+export function Pricing({ className }: { className?: string }) {
   const { t } = useLanguage();
 
   return (
-    <Section id="pricing" bg="muted">
+    <Section id="pricing" bg="muted" className={className}>
       <Container>
         <div className="text-center mb-20">
           <motion.h2 
@@ -34,7 +34,7 @@ export function Pricing() {
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-stretch">
           {t.pricing.plans.map((plan, idx) => {
             const isFeatured = plan.featured;
             return (
@@ -45,9 +45,9 @@ export function Pricing() {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.15, duration: 0.6 }}
                 className={cn(
-                  "relative rounded-3xl p-8 md:p-10 border transition-all duration-300",
+                  "relative flex flex-col h-full rounded-3xl p-8 md:p-10 border transition-all duration-300",
                   isFeatured 
-                    ? "bg-brand-teal text-white border-transparent shadow-2xl shadow-brand-teal/20 md:-translate-y-4" 
+                    ? "bg-brand-teal text-white border-transparent shadow-2xl shadow-brand-teal/20 md:scale-105 z-10" 
                     : "bg-white text-brand-text border-brand-border/80 hover:border-brand-teal/30 hover:shadow-xl"
                 )}
               >
@@ -88,7 +88,7 @@ export function Pricing() {
                 <Button
                   onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
                   className={cn(
-                    "w-full h-14 text-base font-semibold rounded-xl transition-all shadow-none",
+                    "w-full mt-auto h-14 text-base font-semibold rounded-xl transition-all shadow-none",
                     isFeatured 
                       ? "bg-brand-gold hover:bg-brand-gold/90 text-white" 
                       : "bg-brand-teal hover:bg-brand-teal-dark text-white"

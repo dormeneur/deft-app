@@ -1,8 +1,8 @@
 export const CONTENT = {
   en: {
     nav: {
-      links: ["Home", "Services", "How It Works", "Pricing", "Testimonials", "About", "Contact"],
-      ids: ["hero", "services", "how", "pricing", "testimonials", "about", "contact"],
+      links: ["Home", "Pricing", "Our Work", "Insights", "Contact Us"],
+      hrefs: ["/", "/pricing", "/work", "/insights", "/contact"],
       cta: "Book Free Call",
     },
     hero: {
@@ -92,14 +92,59 @@ export const CONTENT = {
       ],
     },
     portfolio: {
-      title: "Featured Case Study",
-      sub: "See how we transformed Emporium Tailors into a digital success.",
-      project: {
-        name: "Emporium Tailors",
-        desc: "A complete digital transformation for a renowned Sukhumvit tailor. We delivered a lightning-fast, mobile-first experience that tripled their monthly booking inquiries.",
-        stats: ["99/100 Lighthouse Score", "Mobile Optimized", "Bilingual Architecture"],
-        cta: "View Case Study",
-      }
+      title: "Featured Case Studies",
+      sub: "See how we transform businesses into digital success stories.",
+      projects: [
+        {
+          id: "emporium-tailors",
+          name: "Emporium Tailors",
+          category: "Web Design & SEO",
+          desc: "A complete digital transformation for a renowned Sukhumvit tailor. We delivered a lightning-fast, mobile-first experience that tripled their monthly booking inquiries.",
+          stats: ["99/100 Lighthouse Score", "Mobile Optimized", "Bilingual Architecture"],
+          cta: "View Case Study",
+          href: "https://emporium-tailors.vercel.app/",
+          visualType: "image",
+          visualData: "/portfolio/emporium.png",
+        },
+        {
+          id: "art-gallery",
+          name: "ART GALLERY",
+          category: "Decentralized NFT Art Space",
+          desc: "A modern, Web3-integrated gallery for digital artists. Featuring seamless wallet connections and immersive 3D viewing experiences.",
+          stats: ["Web3 Integration", "3D Canvas", "High Performance"],
+          cta: "Explore Gallery",
+          href: "https://cyber-artgallery.vercel.app/",
+          visualType: "image",
+          visualData: "/portfolio/artgallery.png",
+        },
+        {
+          id: "aditya-bharti",
+          name: "Aditya Bharti",
+          category: "Personal Brand & Web App",
+          desc: "A highly interactive developer portfolio built to showcase technical skills, projects, and professional experience with premium animations.",
+          stats: ["Interactive UI", "High Performance", "Custom Animations"],
+          cta: "View Portfolio",
+          href: "https://aditya-bharti.vercel.app/",
+          visualType: "image",
+          visualData: "/portfolio/aditya.png",
+        },
+        {
+          id: "next",
+          name: "Your Business",
+          category: "Premium Digital Presence",
+          desc: "Ready to transform your business with a premium digital presence? Let's build something extraordinary together.",
+          stats: ["Custom Design", "Fast Delivery", "Monthly Support"],
+          cta: "Start Your Project",
+          href: null,
+          visualType: "next",
+          visualData: "You Could Be Here Next",
+        }
+      ]
+    },
+    nextSuccess: {
+      title: "You Could Be Here Next",
+      sub: "Ready to transform your business with a premium digital presence?",
+      cta: "Start Your Project",
     },
     about: {
       title: "About Deft",
@@ -129,8 +174,8 @@ export const CONTENT = {
   },
   th: {
     nav: {
-      links: ["หน้าแรก", "บริการ", "วิธีการทำงาน", "ราคา", "รีวิว", "เกี่ยวกับเรา", "ติดต่อ"],
-      ids: ["hero", "services", "how", "pricing", "testimonials", "about", "contact"],
+      links: ["หน้าแรก", "ราคา", "ผลงานของเรา", "บทความ", "ติดต่อเรา"],
+      hrefs: ["/", "/pricing", "/work", "/insights", "/contact"],
       cta: "จองการโทรฟรี",
     },
     hero: {
@@ -221,13 +266,58 @@ export const CONTENT = {
     },
     portfolio: {
       title: "ผลงานที่โดดเด่น",
-      sub: "ดูว่าเราเปลี่ยน Emporium Tailors ให้ประสบความสำเร็จในยุคดิจิทัลได้อย่างไร",
-      project: {
-        name: "Emporium Tailors",
-        desc: "การเปลี่ยนแปลงทางดิจิทัลอย่างเต็มรูปแบบสำหรับร้านตัดเสื้อชื่อดังในสุขุมวิท เราส่งมอบประสบการณ์ที่รวดเร็วและรองรับมือถือเป็นหลัก ซึ่งทำให้ยอดสอบถามการจองเพิ่มขึ้นสามเท่าในแต่ละเดือน",
-        stats: ["คะแนน Lighthouse 99/100", "รองรับมือถือ", "สถาปัตยกรรมสองภาษา"],
-        cta: "ดูผลงาน",
-      }
+      sub: "ดูว่าเราเปลี่ยนธุรกิจให้ประสบความสำเร็จในยุคดิจิทัลได้อย่างไร",
+      projects: [
+        {
+          id: "emporium-tailors",
+          name: "Emporium Tailors",
+          category: "ออกแบบเว็บไซต์และ SEO",
+          desc: "การเปลี่ยนแปลงทางดิจิทัลอย่างเต็มรูปแบบสำหรับร้านตัดเสื้อชื่อดังในสุขุมวิท เราส่งมอบประสบการณ์ที่รวดเร็วและรองรับมือถือเป็นหลัก ซึ่งทำให้ยอดสอบถามการจองเพิ่มขึ้นสามเท่าในแต่ละเดือน",
+          stats: ["คะแนน Lighthouse 99/100", "รองรับมือถือ", "สถาปัตยกรรมสองภาษา"],
+          cta: "ดูผลงาน",
+          href: "https://emporium-tailors.vercel.app/",
+          visualType: "image",
+          visualData: "/portfolio/emporium.png",
+        },
+        {
+          id: "art-gallery",
+          name: "Art Gallery",
+          category: "พื้นที่แสดงศิลปะ NFT ไร้ศูนย์กลาง",
+          desc: "แกลเลอรีที่ทันสมัยและผสาน Web3 สำหรับศิลปินดิจิทัล มีการเชื่อมต่อกระเป๋าเงินดิจิทัลที่ราบรื่นและประสบการณ์การรับชมภาพ 3 มิติที่สมจริง",
+          stats: ["การผสาน Web3", "แคนวาส 3 มิติ", "ประสิทธิภาพสูง"],
+          cta: "สำรวจแกลเลอรี",
+          href: "https://cyber-artgallery.vercel.app/",
+          visualType: "image",
+          visualData: "/portfolio/artgallery.png",
+        },
+        {
+          id: "aditya-bharti",
+          name: "Aditya Bharti",
+          category: "แบรนด์ส่วนตัวและเว็บแอป",
+          desc: "พอร์ตโฟลิโอนักพัฒนาที่มีการโต้ตอบสูง สร้างขึ้นเพื่อแสดงทักษะทางเทคนิค โปรเจกต์ และประสบการณ์การทำงานพร้อมแอนิเมชันระดับพรีเมียม",
+          stats: ["UI โต้ตอบได้", "ประสิทธิภาพสูง", "แอนิเมชันเฉพาะตัว"],
+          cta: "ดูพอร์ตโฟลิโอ",
+          href: "https://aditya-bharti.vercel.app/",
+          visualType: "image",
+          visualData: "/portfolio/aditya.png",
+        },
+        {
+          id: "next",
+          name: "ธุรกิจของคุณ",
+          category: "ตัวตนดิจิทัลระดับพรีเมียม",
+          desc: "พร้อมที่จะพลิกโฉมธุรกิจของคุณด้วยตัวตนดิจิทัลระดับพรีเมียมหรือยัง? มาร่วมสร้างสิ่งที่ยอดเยี่ยมด้วยกันเถอะ",
+          stats: ["ดีไซน์เฉพาะตัว", "ส่งมอบรวดเร็ว", "บริการดูแลรายเดือน"],
+          cta: "เริ่มต้นโปรเจกต์ของคุณ",
+          href: null,
+          visualType: "next",
+          visualData: "คุณอาจอยู่ที่นี่เป็นรายต่อไป",
+        }
+      ]
+    },
+    nextSuccess: {
+      title: "ความสำเร็จต่อไปอาจเป็นคุณ",
+      sub: "พร้อมที่จะพลิกโฉมธุรกิจของคุณด้วยตัวตนดิจิทัลระดับพรีเมียมหรือยัง?",
+      cta: "เริ่มต้นโปรเจกต์ของคุณ",
     },
     about: {
       title: "เกี่ยวกับ Deft",
