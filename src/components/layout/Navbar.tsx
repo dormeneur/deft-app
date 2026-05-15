@@ -6,9 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useBooking } from "@/components/providers/BookingProvider";
+import { trackEvent } from "@/lib/tracking";
 
 export function Navbar() {
   const { t, lang, setLang, isEn } = useLanguage();
+  const { openBooking } = useBooking();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -78,7 +81,10 @@ export function Navbar() {
           </button>
           
           <Button
-            onClick={() => scrollTo("contact")}
+            onClick={() => {
+              trackEvent('cta_click', { button: 'nav_book_call' });
+              openBooking();
+            }}
             className="ml-2 bg-brand-teal text-white hover:bg-brand-teal-dark font-medium shadow-none h-10 px-6 rounded-lg"
           >
             {t.nav.cta}
@@ -140,7 +146,11 @@ export function Navbar() {
                   <span className="text-xl">{isEn ? "🇹🇭" : "🇬🇧"}</span>
                 </button>
                 <Button
-                  onClick={() => scrollTo("contact")}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    trackEvent('cta_click', { button: 'nav_mobile_book_call' });
+                    openBooking();
+                  }}
                   className="w-full bg-brand-teal text-white hover:bg-brand-teal-dark font-medium shadow-none h-12 text-base rounded-lg"
                 >
                   {t.nav.cta}

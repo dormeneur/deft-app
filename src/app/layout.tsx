@@ -5,6 +5,7 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import { BookingProvider } from "@/components/providers/BookingProvider";
 import { Toaster } from "sonner";
 import Script from "next/script";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const cormorantGaramond = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -94,6 +95,7 @@ export default function RootLayout({
           </BookingProvider>
         </LanguageProvider>
         <Script id="schema-local-business" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
+        {process.env.NEXT_PUBLIC_GA_ID && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />}
       </body>
     </html>
   );

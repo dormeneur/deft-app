@@ -8,19 +8,64 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar, Mail, Phone, MessageCircle, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import emailjs from "@emailjs/browser";
+import { toast } from "sonner";
+import { useBooking } from "@/components/providers/BookingProvider";
+import { trackEvent } from "@/lib/tracking";
+
+const formSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  biz: z.string().optional(),
+  msg: z.string().min(10, "Message must be at least 10 characters"),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 export function Contact() {
   const { t } = useLanguage();
-  const [formStatus, setFormStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const { openBooking } = useBooking();
+  const [isSending, setIsSending] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormStatus("sending");
-    // Simulate EmailJS or server action
-    setTimeout(() => {
-      setFormStatus("sent");
-      setTimeout(() => setFormStatus("idle"), 5000);
-    }, 1500);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+  });
+
+  const onSubmit = async (data: FormValues) => {
+    setIsSending(true);
+    try {
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          from_name: data.name,
+          reply_to: data.email,
+          user_email: data.email,
+          business_name: data.biz || "N/A",
+          message: data.msg,
+          to_email: "work.adityabharti@gmail.com",
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      );
+      toast.success(t.contact.sent);
+      trackEvent('form_submission', { form: 'contact', status: 'success' });
+      reset();
+    } catch (error: any) {
+      console.error("EmailJS Error Details:", error);
+      const errorMessage = error?.text || error?.message || "Failed to send message. Please try again.";
+      toast.error(`Error: ${errorMessage}`);
+      trackEvent('form_submission', { form: 'contact', status: 'error' });
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -56,23 +101,28 @@ export function Contact() {
             transition={{ duration: 0.8 }}
             className="bg-white rounded-3xl p-8 md:p-12 border border-brand-border/80 shadow-xl shadow-brand-border/20"
           >
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <Input required placeholder={t.contact.fields.name} className="h-12 bg-brand-bg/50 border-brand-border text-[15px]" />
-                <Input required type="email" placeholder={t.contact.fields.email} className="h-12 bg-brand-bg/50 border-brand-border text-[15px]" />
-              </div>
-              <Input placeholder={t.contact.fields.biz} className="h-12 bg-brand-bg/50 border-brand-border text-[15px]" />
-              <Textarea required placeholder={t.contact.fields.msg} rows={5} className="resize-none bg-brand-bg/50 border-brand-border text-[15px] pt-4" />
-              
-              {formStatus === "sent" ? (
-                <div className="w-full h-14 bg-brand-teal-faint text-brand-teal-dark flex items-center justify-center font-bold text-[15px] rounded-xl border border-brand-teal/20">
-                  {t.contact.sent}
+                <div>
+                  <Input {...register("name")} placeholder={t.contact.fields.name} className="h-12 bg-brand-bg/50 border-brand-border text-[15px]" />
+                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
                 </div>
-              ) : (
-                <Button disabled={formStatus === "sending"} type="submit" className="w-full h-14 bg-brand-teal hover:bg-brand-teal-dark text-white font-bold text-base rounded-xl shadow-none transition-all">
-                  {formStatus === "sending" ? t.contact.sending : t.contact.send}
-                </Button>
-              )}
+                <div>
+                  <Input {...register("email")} type="email" placeholder={t.contact.fields.email} className="h-12 bg-brand-bg/50 border-brand-border text-[15px]" />
+                  {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+                </div>
+              </div>
+              <div>
+                <Input {...register("biz")} placeholder={t.contact.fields.biz} className="h-12 bg-brand-bg/50 border-brand-border text-[15px]" />
+              </div>
+              <div>
+                <Textarea {...register("msg")} placeholder={t.contact.fields.msg} rows={5} className="resize-none bg-brand-bg/50 border-brand-border text-[15px] pt-4" />
+                {errors.msg && <p className="text-red-500 text-xs mt-1">{errors.msg.message}</p>}
+              </div>
+              
+              <Button disabled={isSending} type="submit" className="w-full h-14 bg-brand-teal hover:bg-brand-teal-dark text-white font-bold text-base rounded-xl shadow-none transition-all">
+                {isSending ? t.contact.sending : t.contact.send}
+              </Button>
 
               <div className="relative py-4">
                 <div className="absolute inset-0 flex items-center">
@@ -83,7 +133,7 @@ export function Contact() {
                 </div>
               </div>
 
-              <Button type="button" variant="outline" className="w-full h-14 border-2 border-brand-border text-brand-text font-bold text-base rounded-xl bg-transparent hover:bg-brand-bg hover:border-brand-border transition-all flex items-center gap-2">
+              <Button onClick={openBooking} type="button" variant="outline" className="w-full h-14 border-2 border-brand-border text-brand-text font-bold text-base rounded-xl bg-transparent hover:bg-brand-bg hover:border-brand-border transition-all flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-brand-teal" />
                 {t.contact.book}
               </Button>
