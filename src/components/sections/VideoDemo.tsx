@@ -3,9 +3,10 @@
 import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Container, Section } from "@/components/ui/layout-wrappers";
-import { Play } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+
+const DEMO_VIDEO_SRC = "/demo.mp4";
 
 export function VideoDemo({ className }: { className?: string }) {
   const { t } = useLanguage();
@@ -30,18 +31,17 @@ export function VideoDemo({ className }: { className?: string }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className="w-full max-w-[860px] aspect-video bg-[#0E1918] rounded-2xl overflow-hidden relative shadow-2xl border border-brand-border/50 group cursor-pointer flex flex-col items-center justify-center"
+          className="w-full max-w-[860px] aspect-video bg-[#0E1918] rounded-2xl overflow-hidden relative shadow-2xl border border-brand-border/50"
         >
-          {/* Abstract elegant placeholder inside video */}
-          <div className="absolute inset-0 bg-gradient-to-br from-brand-teal-dark/40 to-transparent pointer-events-none" />
-          
-          <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-6 group-hover:scale-105 group-hover:bg-brand-teal/80 transition-all duration-300 z-10 backdrop-blur-sm">
-            <Play className="w-8 h-8 text-white ml-2 opacity-90" />
-          </div>
-          
-          <div className="text-white/40 text-[14px] italic font-medium z-10 font-sans tracking-wide">
-            {t.video.placeholder}
-          </div>
+          <video
+            className="h-full w-full object-cover"
+            controls
+            playsInline
+            preload="metadata"
+          >
+            <source src={DEMO_VIDEO_SRC} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </motion.div>
       </Container>
     </Section>
