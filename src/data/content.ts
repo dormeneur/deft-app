@@ -20,8 +20,8 @@ export const CONTENT = {
       trust: ["Mobile Optimized", "SEO Ready", "Fast Delivery", "Monthly Support"],
     },
     video: {
-      title: "See How Easy It Is",
-      sub: "Watch how we transform a local Thai business into a professional online presence — fast, affordable, and built to last.",
+      title: "Your First Impression Matters",
+      sub: "Your website is your first impression — make it count.",
       placeholder: "Paste your Loom or YouTube demo URL here",
     },
     services: {
@@ -157,8 +157,8 @@ export const CONTENT = {
       trust: ["รองรับมือถือ", "พร้อมสำหรับ SEO", "ส่งมอบรวดเร็ว", "ดูแลรายเดือน"],
     },
     video: {
-      title: "ดูว่าง่ายแค่ไหน",
-      sub: "ชมวิดีโอสั้นๆ ว่าเราเปลี่ยนธุรกิจไทยท้องถิ่นให้มีตัวตนออนไลน์ที่เป็นมืออาชีพได้อย่างไร — รวดเร็ว ราคาเหมาะสม",
+      title: "ความประทับใจแรกสำคัญที่สุด",
+      sub: "เว็บไซต์คือภาพลักษณ์แรกของคุณ — ทำให้มันน่าประทับใจ",
       placeholder: "วางลิงก์วิดีโอ Loom หรือ YouTube ของคุณที่นี่",
     },
     services: {
