@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { ArrowUpRight, ChevronDown } from "lucide-react";
+import { ArrowUpRight, ChevronDown, Menu } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { track } from "@/lib/tracking";
@@ -111,7 +111,7 @@ export function Navbar() {
         ? "bg-black/60 backdrop-blur-xl border-b border-white/[0.06]"
         : "bg-transparent border-b border-transparent"
     )}>
-      <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12 h-16 grid grid-cols-3 items-center">
+      <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12 h-16 flex lg:grid lg:grid-cols-3 items-center justify-between">
 
         {/* Left — logo */}
         <Link href="/" className="text-xl font-black text-white hover:text-brand-teal transition-colors tracking-tight">
@@ -183,9 +183,11 @@ export function Navbar() {
 
           <button
             onClick={() => setMobileOpen(true)}
-            className="lg:hidden text-[13px] font-bold tracking-[0.12em] uppercase text-white hover:text-brand-teal transition-colors"
+            aria-label="Open menu"
+            aria-expanded={mobileOpen}
+            className="lg:hidden w-10 h-10 rounded-full border border-white/15 flex items-center justify-center text-white hover:border-brand-teal hover:text-brand-teal transition-colors"
           >
-            MENU
+            <Menu className="w-[18px] h-[18px]" />
           </button>
         </div>
       </div>
