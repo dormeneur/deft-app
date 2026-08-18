@@ -6,7 +6,6 @@ import { Services } from "@/components/sections/Services";
 import { HowItWorks } from "@/components/sections/HowItWorks";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Pricing } from "@/components/sections/Pricing";
-import { FounderSnippet } from "@/components/sections/FounderSnippet";
 import { FAQ } from "@/components/sections/FAQ";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { FloatingContact } from "@/components/ui/FloatingContact";
@@ -21,7 +20,6 @@ export default function Home() {
       <HowItWorks />
       <Testimonials />
       <Pricing />
-      <FounderSnippet />
       <FAQ />
       <FinalCTA />
       <Footer />

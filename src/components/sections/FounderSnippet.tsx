@@ -3,9 +3,9 @@ import Link from "next/link";
 import { Container, Section } from "@/components/ui/layout-wrappers";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 
-export function FounderSnippet() {
+export function FounderSnippet({ className }: { className?: string }) {
     return (
-        <Section id="founder">
+        <Section id="founder" className={className}>
             <Container>
                 <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#555] mb-12">
                     Who&apos;s behind Deft

@@ -42,18 +42,21 @@ export function Services({ className }: { className?: string }) {
             ))}
           </div>
 
-          {/* Fade + "show all" — mobile only, hidden once expanded */}
+          {/* Fade only while collapsed — the toggle itself always shows,
+              so "show all" can turn back into "show less" */}
           {!expanded && (
-            <div className="md:hidden absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-brand-bg via-brand-bg/90 to-transparent flex items-end justify-center pb-1">
-              <button
-                onClick={() => setExpanded(true)}
-                className="inline-flex items-center gap-1.5 text-brand-teal text-[14px] font-bold"
-              >
-                Show all services
-                <ChevronDown className="w-4 h-4" />
-              </button>
-            </div>
+            <div className="md:hidden absolute inset-x-0 bottom-9 h-20 bg-gradient-to-t from-brand-bg to-transparent pointer-events-none" />
           )}
+        </div>
+
+        <div className="md:hidden flex justify-center mt-4">
+          <button
+            onClick={() => setExpanded((v) => !v)}
+            className="inline-flex items-center gap-1.5 text-brand-teal text-[14px] font-bold"
+          >
+            {expanded ? "Show less" : "Show all services"}
+            <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`} />
+          </button>
         </div>
       </Container>
     </Section>
