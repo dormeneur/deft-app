@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local source assets — working copies live in public/
+# (resume.txt carries a personal phone number; this repo is public)
+assets/

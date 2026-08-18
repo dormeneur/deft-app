@@ -1,110 +1,102 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { useLanguage } from "@/context/LanguageContext";
-import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { track } from "@/lib/tracking";
 import { useBooking } from "@/components/providers/BookingProvider";
-import { trackEvent } from "@/lib/tracking";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+const NAV_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "Work", href: "/work" },
+  { label: "Contact", href: "/contact" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "Insights", href: "/insights" },
+];
+
 export function Navbar() {
-  const { t, lang, setLang, isEn } = useLanguage();
   const { openBooking } = useBooking();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
+  useEffect(() => { setMounted(true); }, []);
+
+  // Escape closes the dropdown for keyboard users
   useEffect(() => {
-    setMounted(true);
+    if (!menuOpen) return;
+    const fn = (e: KeyboardEvent) => { if (e.key === "Escape") setMenuOpen(false); };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }, [menuOpen]);
+
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", fn, { passive: true });
+    fn();
+    return () => window.removeEventListener("scroll", fn);
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (!mobileMenuOpen) return;
-
-    const previousOverflow = document.body.style.overflow;
+    if (!mobileOpen) return;
+    const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [mobileOpen]);
 
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [mobileMenuOpen]);
+  const handleBooking = () => {
+    track.ctaClick("navbar_book_demo", "navbar");
+    openBooking("navbar");
+  };
 
   const mobileMenu = (
     <AnimatePresence>
-      {mobileMenuOpen && (
+      {mobileOpen && (
         <>
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setMobileMenuOpen(false)}
-            className="fixed inset-0 bg-brand-dark/30 z-[100] lg:hidden"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={() => setMobileOpen(false)}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] lg:hidden"
           />
           <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 bottom-0 w-[80%] max-w-[320px] bg-white z-[101] shadow-2xl flex flex-col lg:hidden border-l border-brand-border"
+            initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="fixed top-0 left-0 right-0 bg-black z-[101] flex flex-col lg:hidden border-b border-[#1f1f1f]"
           >
-            <div className="p-6 flex justify-between items-center border-b border-brand-border bg-white">
-              <span className="font-heading font-semibold text-2xl text-brand-teal">Deft</span>
-              <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-brand-muted hover:text-brand-text">
-                <X className="w-6 h-6" />
+            <div className="px-6 py-5 flex justify-between items-center">
+              <Link href="/" onClick={() => setMobileOpen(false)}
+                className="text-xl font-black text-white tracking-tight">
+                Deft<span className="text-brand-teal">.</span>
+              </Link>
+              <button onClick={() => setMobileOpen(false)}
+                className="text-[13px] font-bold tracking-[0.12em] uppercase text-[#666]">
+                CLOSE
               </button>
             </div>
 
-            <div className="flex flex-col p-6 gap-2 overflow-y-auto bg-white flex-1">
-              {t.nav.links.map((link, idx) => (
-                <Link
-                  key={idx}
-                  href={t.nav.hrefs[idx]}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={cn(
-                    "text-left px-4 py-3 text-[16px] font-medium rounded-lg transition-colors",
-                    pathname === t.nav.hrefs[idx]
-                      ? "text-brand-teal bg-brand-teal/5"
-                      : "text-brand-text hover:bg-brand-teal/5 hover:text-brand-teal"
-                  )}
-                >
-                  {link}
+            <div className="px-6 pt-6 pb-12 flex flex-col gap-2">
+              <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#444] mb-4">
+                MENU
+              </p>
+              {NAV_LINKS.map(({ label, href }) => (
+                <Link key={href} href={href} onClick={() => setMobileOpen(false)}
+                  className="text-[32px] font-black text-white hover:text-brand-teal transition-colors leading-tight">
+                  {label}
                 </Link>
               ))}
-            </div>
 
-            <div className="mt-auto p-6 border-t border-brand-border flex flex-col gap-4 bg-white">
               <button
-                onClick={() => setLang(isEn ? "th" : "en")}
-                className="w-full text-left px-4 py-3 text-[16px] font-medium text-brand-text border border-brand-border rounded-lg flex items-center justify-between"
+                onClick={() => { setMobileOpen(false); handleBooking(); }}
+                className="btn-wipe mt-8 bg-brand-teal text-black font-black text-[18px] h-14 rounded-full glow-teal"
               >
-                <span>{isEn ? "Switch to Thai" : "Switch to English"}</span>
-                <span className="text-xl">{isEn ? "🇹🇭" : "🇬🇧"}</span>
+                Book an Intro Call
               </button>
-              <Button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  trackEvent('cta_click', { button: 'nav_mobile_book_call' });
-                  openBooking();
-                }}
-                className="w-full bg-brand-teal text-white hover:bg-brand-teal-dark font-medium shadow-none h-12 text-base rounded-lg"
-              >
-                {t.nav.cta}
-              </Button>
             </div>
           </motion.div>
         </>
@@ -113,68 +105,89 @@ export function Navbar() {
   );
 
   return (
-    <nav
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
-        mobileMenuOpen || isScrolled
-          ? "bg-background border-brand-border py-4"
-          : "bg-transparent border-transparent py-6"
-      )}
-    >
-      <div className="mx-auto w-full max-w-[1100px] px-6 md:px-10 flex items-center justify-between">
-        {/* Logo */}
-        <Link
-          href="/"
-          className="font-heading font-semibold text-2xl tracking-tight text-brand-teal hover:opacity-80 transition-opacity"
-        >
-          Deft
+    <nav className={cn(
+      "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+      scrolled || mobileOpen
+        ? "bg-black/60 backdrop-blur-xl border-b border-white/[0.06]"
+        : "bg-transparent border-b border-transparent"
+    )}>
+      <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12 h-16 grid grid-cols-3 items-center">
+
+        {/* Left — logo */}
+        <Link href="/" className="text-xl font-black text-white hover:text-brand-teal transition-colors tracking-tight">
+          Deft<span className="text-brand-teal">.</span>
         </Link>
 
-        {/* Desktop Nav */}
-        <div className="hidden lg:flex items-center gap-1">
-          {t.nav.links.map((link, idx) => (
-            <Link
-              key={idx}
-              href={t.nav.hrefs[idx]}
-              className={cn(
-                "px-3 py-2 text-[14px] font-medium transition-colors rounded-md hover:bg-brand-teal/5",
-                pathname === t.nav.hrefs[idx]
-                  ? "text-brand-teal"
-                  : "text-brand-muted hover:text-brand-teal"
-              )}
-            >
-              {link}
-            </Link>
-          ))}
-          
-          <div className="w-[1px] h-5 bg-brand-border mx-3" />
-          
+        {/* Center — MENU dropdown */}
+        <div
+          className="hidden lg:flex items-center justify-center relative"
+          onMouseEnter={() => setMenuOpen(true)}
+          onMouseLeave={() => setMenuOpen(false)}
+        >
           <button
-            onClick={() => setLang(isEn ? "th" : "en")}
-            className="px-3 py-2 text-[14px] font-medium text-brand-text hover:bg-brand-border/50 transition-colors rounded-md flex items-center gap-2"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-expanded={menuOpen}
+            aria-haspopup="true"
+            className="flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-[0.1em] text-[#666] hover:text-white transition-colors py-2"
           >
-            <span className="text-[16px]">{isEn ? "🇹🇭" : "🇬🇧"}</span>
-            {isEn ? "ภาษาไทย" : "English"}
+            MENU
+            <ChevronDown
+              className={cn("w-3.5 h-3.5 transition-transform duration-300", menuOpen && "rotate-180")}
+            />
           </button>
-          
-          <Button
-            onClick={() => {
-              trackEvent('cta_click', { button: 'nav_book_call' });
-              openBooking();
-            }}
-            className="ml-2 bg-brand-teal text-white hover:bg-brand-teal-dark font-medium shadow-none h-10 px-6 rounded-lg"
-          >
-            {t.nav.cta}
-          </Button>
+
+          <AnimatePresence>
+            {menuOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -8, scale: 0.97 }}
+                transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
+                className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 origin-top rounded-2xl border border-white/10 bg-black/90 backdrop-blur-xl p-2 shadow-2xl shadow-black/60"
+              >
+                {NAV_LINKS.map(({ label, href }, i) => (
+                  <motion.div
+                    key={href}
+                    initial={{ opacity: 0, x: -6 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.03 * i, duration: 0.2 }}
+                  >
+                    <Link
+                      href={href}
+                      onClick={() => setMenuOpen(false)}
+                      className={cn(
+                        "group flex items-center justify-between rounded-xl px-4 py-2.5 text-[14px] font-bold transition-colors",
+                        pathname === href
+                          ? "bg-brand-teal/10 text-brand-teal"
+                          : "text-[#999] hover:bg-white/5 hover:text-white"
+                      )}
+                    >
+                      {label}
+                      <ArrowUpRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0" />
+                    </Link>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        {/* Mobile Toggle */}
-        <button
-          className="lg:hidden p-2 rounded-md text-brand-text bg-white/80 backdrop-blur-sm border border-brand-border/60 shadow-sm"
-          onClick={() => setMobileMenuOpen(true)}
-        >
-          <Menu className="w-6 h-6" />
-        </button>
+        {/* Right — CTA + mobile MENU */}
+        <div className="flex items-center justify-end gap-4">
+          <button
+            onClick={handleBooking}
+            className="btn-wipe hidden lg:flex items-center justify-center bg-brand-teal text-black font-bold text-[14px] px-5 py-2.5 rounded-full glow-teal"
+          >
+            Book an Intro Call
+          </button>
+
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="lg:hidden text-[13px] font-bold tracking-[0.12em] uppercase text-white hover:text-brand-teal transition-colors"
+          >
+            MENU
+          </button>
+        </div>
       </div>
 
       {mounted ? createPortal(mobileMenu, document.body) : null}

@@ -1,37 +1,35 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+// ponytail: Thai support removed — always returns English.
+// useLanguage() hook kept so no callers break.
+import { createContext, useContext, ReactNode } from "react";
 import { CONTENT } from "@/data/content";
 
-type Language = "en" | "th";
 type ContentType = typeof CONTENT.en;
 
 interface LanguageContextType {
-  lang: Language;
-  setLang: (lang: Language) => void;
   t: ContentType;
-  isEn: boolean;
+  // Legacy compat — kept so callers don't need changes
+  lang: "en";
+  isEn: true;
+  setLang: (_: "en") => void;
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const LanguageContext = createContext<LanguageContextType>({
+  t: CONTENT.en,
+  lang: "en",
+  isEn: true,
+  setLang: () => { },
+});
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Language>("en");
-
-  const value = {
-    lang,
-    setLang,
-    t: CONTENT[lang],
-    isEn: lang === "en",
-  };
-
-  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+  return (
+    <LanguageContext.Provider value={{ t: CONTENT.en, lang: "en", isEn: true, setLang: () => { } }}>
+      {children}
+    </LanguageContext.Provider>
+  );
 }
 
 export function useLanguage() {
-  const context = useContext(LanguageContext);
-  if (context === undefined) {
-    throw new Error("useLanguage must be used within a LanguageProvider");
-  }
-  return context;
+  return useContext(LanguageContext);
 }

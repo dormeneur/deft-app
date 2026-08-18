@@ -1,214 +1,175 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { useLanguage } from "@/context/LanguageContext";
-import { Container, Section } from "@/components/ui/layout-wrappers";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useBooking } from "@/components/providers/BookingProvider";
-import { trackEvent } from "@/lib/tracking";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { Container, Section } from "@/components/ui/layout-wrappers";
+import { CONTENT } from "@/data/content";
+
+type Project = (typeof CONTENT.en.portfolio.projects)[number];
+
+const PROJECTS = CONTENT.en.portfolio.projects as Project[];
+const AUTOPLAY_MS = 6000;
+
+const slide = {
+  enter: (dir: number) => ({ x: dir > 0 ? 420 : -420, opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (dir: number) => ({ x: dir > 0 ? -420 : 420, opacity: 0 }),
+};
+
+function Visual({ project }: { project: Project }) {
+  if (project.visualType === "image") {
+    return (
+      <Image
+        src={project.visualData}
+        alt={project.name}
+        fill
+        priority
+        sizes="(max-width: 1280px) 100vw, 60vw"
+        className="object-cover object-top"
+      />
+    );
+  }
+
+  const isNext = project.visualType === "next";
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8">
+      {isNext && <Sparkles className="w-10 h-10 text-brand-teal mb-4" />}
+      <span className={isNext ? "text-[20px] font-bold text-white" : "text-[56px] font-black tracking-tight text-white leading-none"}>
+        {project.visualData}
+      </span>
+      {!isNext && (
+        <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#555] mt-4">
+          Private client system
+        </span>
+      )}
+    </div>
+  );
+}
 
 export function Portfolio({ className }: { className?: string }) {
-  const { t } = useLanguage();
-  const { openBooking } = useBooking();
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+  const [paused, setPaused] = useState(false);
 
-  const projects = t.portfolio.projects;
-  const numProjects = projects.length;
-
-  const paginate = useCallback((newDirection: number) => {
-    setDirection(newDirection);
-    setCurrentIndex((prevIndex) => {
-      let nextIndex = prevIndex + newDirection;
-      if (nextIndex < 0) nextIndex = numProjects - 1;
-      if (nextIndex >= numProjects) nextIndex = 0;
-      return nextIndex;
-    });
-  }, [numProjects]);
+  const go = useCallback((dir: number) => {
+    setDirection(dir);
+    setIndex((i) => (i + dir + PROJECTS.length) % PROJECTS.length);
+  }, []);
 
   useEffect(() => {
-    if (isHovered) return;
-    const timer = setInterval(() => {
-      paginate(1);
-    }, 5000);
+    if (paused) return;
+    const timer = setInterval(() => go(1), AUTOPLAY_MS);
     return () => clearInterval(timer);
-  }, [paginate, isHovered]);
+  }, [go, paused]);
 
-  const variants = {
-    enter: (direction: number) => {
-      return {
-        x: direction > 0 ? 1000 : -1000,
-        opacity: 0
-      };
-    },
-    center: {
-      zIndex: 1,
-      x: 0,
-      opacity: 1
-    },
-    exit: (direction: number) => {
-      return {
-        zIndex: 0,
-        x: direction < 0 ? 1000 : -1000,
-        opacity: 0
-      };
-    }
-  };
-
-  const currentProject = projects[currentIndex];
+  const project = PROJECTS[index];
+  const href = project.href ?? "#book-calendar";
 
   return (
-    <Section id="portfolio" bg="muted" className={className}>
+    <Section id="portfolio" className={className}>
       <Container>
-        <div className="text-center mb-16 md:mb-24">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-heading font-medium text-brand-text mb-4"
-          >
-            {t.portfolio.title}
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-[17px] text-brand-muted max-w-[500px] mx-auto"
-          >
-            {t.portfolio.sub}
-          </motion.p>
+        <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#555] mb-6">
+          Case Studies
         </div>
+        <h2 className="section-headline mb-4 max-w-[620px]">{CONTENT.en.portfolio.title}</h2>
+        <p className="text-[17px] text-brand-muted max-w-[560px] mb-12">{CONTENT.en.portfolio.sub}</p>
 
-        <div className="relative" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-          <div className="absolute top-1/2 -left-4 md:-left-16 -translate-y-1/2 z-20">
-            <button 
-              onClick={() => paginate(-1)}
-              className="w-12 h-12 rounded-full bg-white shadow-xl shadow-brand-teal/5 border border-brand-border flex items-center justify-center text-brand-text hover:bg-brand-teal hover:text-white transition-colors"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-          </div>
-
-          <div className="absolute top-1/2 -right-4 md:-right-16 -translate-y-1/2 z-20">
-            <button 
-              onClick={() => paginate(1)}
-              className="w-12 h-12 rounded-full bg-white shadow-xl shadow-brand-teal/5 border border-brand-border flex items-center justify-center text-brand-text hover:bg-brand-teal hover:text-white transition-colors"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-          </div>
-
-          <div className="relative overflow-hidden rounded-3xl h-[800px] md:h-[750px] lg:h-[500px]">
-            <AnimatePresence initial={false} custom={direction}>
+        <div
+          className="relative"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
+          {/* Screenshots are ~2:1 (a browser window), so the visual keeps that
+              ratio at every width and is centred in the panel — the old
+              full-height panel was ~1.6:1 and cropped a quarter off the sides. */}
+          <div className="relative overflow-hidden rounded-3xl border border-brand-border bg-brand-surface min-h-[560px] sm:min-h-[620px] xl:min-h-[400px]">
+            <AnimatePresence initial={false} custom={direction} mode="wait">
               <motion.div
-                key={currentIndex}
+                key={project.id}
                 custom={direction}
-                variants={variants}
+                variants={slide}
                 initial="enter"
                 animate="center"
                 exit="exit"
-                transition={{
-                  x: { type: "spring", stiffness: 300, damping: 30 },
-                  opacity: { duration: 0.2 }
-                }}
-                className="absolute inset-0 bg-white border border-brand-border/80 shadow-xl shadow-brand-teal/5 flex flex-col lg:flex-row w-full h-full"
+                transition={{ x: { type: "spring", stiffness: 260, damping: 30 }, opacity: { duration: 0.2 } }}
+                className="flex flex-col xl:flex-row xl:items-center xl:absolute xl:inset-0"
               >
-                {/* Image / Graphic Side */}
-                <div className="lg:w-[55%] bg-brand-dark p-6 md:p-10 lg:p-12 flex flex-col justify-center relative overflow-hidden min-h-[280px] lg:min-h-full">
-                  <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent pointer-events-none" />
-                  
-                  {currentProject.visualType === "next" ? (
-                    <div className="relative z-10 w-full h-full flex flex-col items-center justify-center text-center">
-                      <div className="w-20 h-20 rounded-full bg-brand-teal/20 text-brand-gold flex items-center justify-center mb-6">
-                        <Sparkles className="w-10 h-10" />
-                      </div>
-                      <h3 className="text-3xl font-heading font-medium text-white mb-2">{currentProject.visualData}</h3>
-                    </div>
-                  ) : currentProject.visualType === "image" ? (
-                    <div className="relative z-10 w-full aspect-video bg-brand-dark rounded-2xl border border-white/10 shadow-2xl flex items-center justify-center overflow-hidden">
-                       <Image 
-                         src={currentProject.visualData}
-                         alt={currentProject.name}
-                         fill
-                         priority
-                         sizes="(max-width: 1024px) 100vw, 55vw"
-                         className="object-cover object-top hover:scale-105 transition-transform duration-700"
-                       />
-                    </div>
-                  ) : (
-                    <div className="relative z-10 w-full aspect-video bg-white/5 rounded-2xl border border-white/10 shadow-2xl flex items-center justify-center overflow-hidden backdrop-blur-sm group">
-                       <div className="absolute top-0 left-0 right-0 h-12 bg-white/10 border-b border-white/5 flex items-center px-4 gap-2">
-                         <div className="w-3 h-3 rounded-full bg-white/20" />
-                         <div className="w-3 h-3 rounded-full bg-white/20" />
-                         <div className="w-3 h-3 rounded-full bg-white/20" />
-                       </div>
-                       <div className="w-24 h-24 rounded-full border border-brand-gold/30 flex items-center justify-center opacity-50 group-hover:scale-110 transition-transform duration-500">
-                          <div className="text-brand-gold text-2xl font-heading">{currentProject.visualData}</div>
-                       </div>
-                    </div>
-                  )}
+                {/* Visual — always 2:1, never stretched to fill */}
+                <div className="relative w-full xl:w-[60%] aspect-[2/1] bg-[#0c0c0c] overflow-hidden shrink-0">
+                  <Visual project={project} />
                 </div>
 
-                {/* Content Side */}
-                <div className="lg:w-[45%] p-8 md:p-10 lg:p-12 flex flex-col justify-center flex-1">
-                  <div className="inline-flex items-center gap-2 bg-brand-teal-faint text-brand-teal-dark px-3 py-1 rounded-full text-[12px] font-bold mb-6 self-start tracking-wide uppercase">
-                    {currentProject.category}
-                  </div>
-                  
-                  <h3 className="text-3xl md:text-4xl font-heading font-medium text-brand-text mb-4 line-clamp-1">
-                    {currentProject.name}
+                {/* Copy */}
+                <div className="xl:w-[40%] p-8 md:p-10 flex flex-col justify-center">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-brand-teal mb-3">
+                    {project.category}
+                  </span>
+
+                  <h3 className="text-[26px] md:text-[30px] font-bold text-white leading-tight mb-4">
+                    {project.name}
                   </h3>
-                  
-                  <p className="text-[16px] text-brand-muted leading-relaxed mb-8 line-clamp-3">
-                    {currentProject.desc}
+
+                  <p className="text-[15px] text-brand-muted leading-relaxed mb-6">
+                    {project.desc}
                   </p>
 
-                  <ul className="space-y-4 mb-10">
-                    {currentProject.stats.map((stat: string, idx: number) => (
-                      <li key={idx} className="flex items-center gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-brand-teal shrink-0" />
-                        <span className="text-[15px] font-medium text-brand-text">{stat}</span>
+                  <ul className="flex flex-wrap gap-2 mb-8">
+                    {project.stats.map((stat) => (
+                      <li
+                        key={stat}
+                        className="text-[11px] font-semibold text-[#888] border border-brand-border rounded-full px-3 py-1.5"
+                      >
+                        {stat}
                       </li>
                     ))}
                   </ul>
 
-                  <Button
-                    onClick={() => {
-                      if (currentProject.visualType === "next") {
-                        trackEvent('cta_click', { button: 'portfolio_next_book' });
-                        openBooking();
-                      } else if (currentProject.href) {
-                        window.open(currentProject.href, "_blank");
-                      } else {
-                        document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-                      }
-                    }}
-                    className="bg-brand-dark hover:bg-brand-text text-white font-medium h-12 px-6 rounded-xl w-fit flex items-center gap-2 group mt-auto"
+                  <Link
+                    href={href}
+                    {...(project.href ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className="btn-wipe inline-flex items-center gap-2 self-start bg-brand-teal text-black font-bold text-[14px] h-11 px-6 rounded-full glow-teal"
                   >
-                    {currentProject.cta}
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+                    {project.cta}
+                    <ArrowUpRight className="w-4 h-4" />
+                  </Link>
                 </div>
               </motion.div>
             </AnimatePresence>
           </div>
-          
-          <div className="flex justify-center gap-2 mt-8">
-            {projects.map((_, idx) => (
+
+          {/* Controls */}
+          <div className="flex items-center justify-between mt-6">
+            <div className="flex gap-2">
+              {PROJECTS.map((p, i) => (
+                <button
+                  key={p.id}
+                  onClick={() => { setDirection(i > index ? 1 : -1); setIndex(i); }}
+                  aria-label={`Show ${p.name}`}
+                  aria-current={i === index}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${i === index ? "w-8 bg-brand-teal" : "w-2.5 bg-brand-border hover:bg-[#444]"}`}
+                />
+              ))}
+            </div>
+
+            <div className="flex gap-2">
               <button
-                key={idx}
-                onClick={() => {
-                  setDirection(idx > currentIndex ? 1 : -1);
-                  setCurrentIndex(idx);
-                }}
-                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${idx === currentIndex ? "bg-brand-teal w-8" : "bg-brand-border hover:bg-brand-muted"}`}
-              />
-            ))}
+                onClick={() => go(-1)}
+                aria-label="Previous project"
+                className="w-11 h-11 rounded-full border border-brand-border bg-brand-surface text-white flex items-center justify-center transition-colors hover:bg-brand-teal hover:text-black hover:border-brand-teal"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => go(1)}
+                aria-label="Next project"
+                className="w-11 h-11 rounded-full border border-brand-border bg-brand-surface text-white flex items-center justify-center transition-colors hover:bg-brand-teal hover:text-black hover:border-brand-teal"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
       </Container>

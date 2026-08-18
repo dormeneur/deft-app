@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Sarabun } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
-import { BookingProvider } from "@/components/providers/BookingProvider";
 import { Toaster } from "sonner";
 import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -16,7 +15,7 @@ const cormorantGaramond = Cormorant_Garamond({
 
 const sarabun = Sarabun({
   variable: "--font-sarabun",
-  subsets: ["latin", "thai"],
+  subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
@@ -87,12 +86,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-sans">
         <LanguageProvider>
-          <BookingProvider>
-            {children}
-            <Toaster position="bottom-center" toastOptions={{
-              className: 'bg-brand-bg border-brand-border text-brand-text font-sans shadow-xl'
-            }} />
-          </BookingProvider>
+          {children}
+          <Toaster position="bottom-center" toastOptions={{
+            className: 'bg-brand-bg border-brand-border text-brand-text font-sans shadow-xl'
+          }} />
         </LanguageProvider>
         <Script id="schema-local-business" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
         {process.env.NEXT_PUBLIC_GA_ID && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />}

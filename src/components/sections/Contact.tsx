@@ -6,20 +6,21 @@ import { Container, Section } from "@/components/ui/layout-wrappers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Calendar, Mail, Phone, MessageCircle, MapPin } from "lucide-react";
+import { SocialLinks } from "@/components/ui/SocialLinks";
+import { Mail, Phone, Copy, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import emailjs from "@emailjs/browser";
 import { toast } from "sonner";
-import { useBooking } from "@/components/providers/BookingProvider";
-import { trackEvent } from "@/lib/tracking";
+
+const EMAIL = "work.adityabharti@gmail.com";
+const PHONE = "+66 063 823 2303";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
-  biz: z.string().optional(),
   msg: z.string().min(10, "Message must be at least 10 characters"),
 });
 
@@ -27,17 +28,26 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function Contact({ className }: { className?: string }) {
   const { t } = useLanguage();
-  const { openBooking } = useBooking();
   const [isSending, setIsSending] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-  });
+  } = useForm<FormValues>({ resolver: zodResolver(formSchema) });
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setCopied(true);
+      toast.success("Email copied");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error(`Copy failed — ${EMAIL}`);
+    }
+  };
 
   const onSubmit = async (data: FormValues) => {
     setIsSending(true);
@@ -49,139 +59,118 @@ export function Contact({ className }: { className?: string }) {
           from_name: data.name,
           reply_to: data.email,
           user_email: data.email,
-          business_name: data.biz || "N/A",
           message: data.msg,
-          to_email: "work.adityabharti@gmail.com",
+          to_email: EMAIL,
         },
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
       );
       toast.success(t.contact.sent);
-      trackEvent('form_submission', { form: 'contact', status: 'success' });
       reset();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as { text?: string; message?: string };
       console.error("EmailJS Error Details:", error);
-      const errorMessage = error?.text || error?.message || "Failed to send message. Please try again.";
-      toast.error(`Error: ${errorMessage}`);
-      trackEvent('form_submission', { form: 'contact', status: 'error' });
+      toast.error(`Error: ${err?.text || err?.message || "Failed to send message."}`);
     } finally {
       setIsSending(false);
     }
   };
 
   return (
-    <Section id="contact" bg="muted" className={className}>
+    <Section id="contact" className={className}>
       <Container>
-        <div className="text-center mb-16 md:mb-24">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-heading font-medium text-brand-text mb-4"
-          >
-            {t.contact.title}
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-[17px] text-brand-muted max-w-[500px] mx-auto"
-          >
-            {t.contact.sub}
-          </motion.p>
-        </div>
+        {/* Heading spans both columns so they start on the same line */}
+        <h2 className="section-headline mb-4">Send us a message</h2>
+        <p className="text-[17px] text-brand-muted mb-14 max-w-[460px]">
+          Tell us what you need. We reply within a day — or scroll down and
+          pick a time that suits you.
+        </p>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-          
-          {/* Form Side */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 lg:gap-20 items-start">
+
+          {/* Form */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="bg-white rounded-3xl p-8 md:p-12 border border-brand-border/80 shadow-xl shadow-brand-border/20"
+            transition={{ duration: 0.6 }}
           >
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-[620px]">
+              {/* Name + email share a row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <Input {...register("name")} placeholder={t.contact.fields.name} className="h-12 bg-brand-bg/50 border-brand-border text-[15px]" />
-                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+                  <Input
+                    {...register("name")}
+                    placeholder={t.contact.fields.name}
+                    className="h-12 bg-brand-surface border-brand-border text-[15px] px-4"
+                  />
+                  {errors.name && <p className="text-red-400 text-xs mt-1.5">{errors.name.message}</p>}
                 </div>
                 <div>
-                  <Input {...register("email")} type="email" placeholder={t.contact.fields.email} className="h-12 bg-brand-bg/50 border-brand-border text-[15px]" />
-                  {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+                  <Input
+                    {...register("email")}
+                    type="email"
+                    placeholder={t.contact.fields.email}
+                    className="h-12 bg-brand-surface border-brand-border text-[15px] px-4"
+                  />
+                  {errors.email && <p className="text-red-400 text-xs mt-1.5">{errors.email.message}</p>}
                 </div>
               </div>
+
               <div>
-                <Input {...register("biz")} placeholder={t.contact.fields.biz} className="h-12 bg-brand-bg/50 border-brand-border text-[15px]" />
+                <Textarea
+                  {...register("msg")}
+                  placeholder={t.contact.fields.msg}
+                  rows={9}
+                  className="resize-none bg-brand-surface border-brand-border text-[15px] p-4 min-h-[220px]"
+                />
+                {errors.msg && <p className="text-red-400 text-xs mt-1.5">{errors.msg.message}</p>}
               </div>
-              <div>
-                <Textarea {...register("msg")} placeholder={t.contact.fields.msg} rows={5} className="resize-none bg-brand-bg/50 border-brand-border text-[15px] pt-4" />
-                {errors.msg && <p className="text-red-500 text-xs mt-1">{errors.msg.message}</p>}
-              </div>
-              
-              <Button disabled={isSending} type="submit" className="w-full h-14 bg-brand-teal hover:bg-brand-teal-dark text-white font-bold text-base rounded-xl shadow-none transition-all">
+
+              <Button
+                disabled={isSending}
+                type="submit"
+                className="btn-wipe h-11 px-8 bg-brand-teal text-black font-bold text-[14px] rounded-full glow-teal"
+              >
                 {isSending ? t.contact.sending : t.contact.send}
-              </Button>
-
-              <div className="relative py-4">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-brand-border"></div>
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-4 text-brand-muted font-bold tracking-widest">OR</span>
-                </div>
-              </div>
-
-              <Button onClick={openBooking} type="button" variant="outline" className="w-full h-14 border-2 border-brand-border text-brand-text font-bold text-base rounded-xl bg-transparent hover:bg-brand-bg hover:border-brand-border transition-all flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-brand-teal" />
-                {t.contact.book}
               </Button>
             </form>
           </motion.div>
 
-          {/* Info Side */}
+          {/* Direct lines — plain rows, no card stack */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex flex-col gap-8"
+            transition={{ duration: 0.6, delay: 0.15 }}
           >
-            {/* Map Container */}
-            <div className="rounded-3xl overflow-hidden border border-brand-border/80 shadow-lg shadow-brand-border/10 bg-brand-bg aspect-[4/3] md:aspect-[16/9] lg:aspect-[4/3] relative group">
-              <div className="absolute inset-0 bg-brand-dark/5 group-hover:bg-transparent transition-colors pointer-events-none z-10" />
-              <iframe
-                src="https://maps.google.com/maps?q=Emporium+Tailors+535+Sukhumvit+Rd+Bangkok+Thailand&output=embed"
-                width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"
-                title="Deft Location"
-                className="absolute inset-0 w-full h-full grayscale-[20%] contrast-125"
-              />
-            </div>
+            <button
+              type="button"
+              onClick={copyEmail}
+              className="group flex items-center gap-3 text-left mb-5"
+            >
+              <Mail className="w-[18px] h-[18px] text-brand-teal shrink-0" />
+              <span className="text-[15px] font-medium text-white group-hover:text-brand-teal transition-colors">
+                {EMAIL}
+              </span>
+              {copied
+                ? <Check className="w-4 h-4 text-brand-teal shrink-0" />
+                : <Copy className="w-4 h-4 text-[#555] group-hover:text-brand-teal transition-colors shrink-0" />}
+            </button>
 
-            {/* Contact Details */}
-            <div className="bg-white rounded-3xl p-8 border border-brand-border/80 flex flex-col gap-6 shadow-sm">
-              {[
-                { icon: <Mail className="w-5 h-5" />, label: t.contact.labels.email, val: "work.adityabharti@gmail.com" },
-                { icon: <Phone className="w-5 h-5" />, label: t.contact.labels.phone, val: "+66 063 823 2303" },
-                { icon: <MessageCircle className="w-5 h-5" />, label: t.contact.labels.line, val: "aditya_bharti" },
-                { icon: <MapPin className="w-5 h-5" />, label: t.contact.labels.address, val: "535 Sukhumvit Rd, Watthana, Bangkok 10110" },
-              ].map((item, idx) => (
-                <div key={idx} className="flex items-start gap-4">
-                  <div className="mt-1 w-10 h-10 rounded-full bg-brand-bg flex items-center justify-center text-brand-teal border border-brand-border/60 shrink-0">
-                    {item.icon}
-                  </div>
-                  <div>
-                    <div className="text-[11px] font-bold text-brand-muted uppercase tracking-[0.1em] mb-1">
-                      {item.label}
-                    </div>
-                    <div className="text-[15px] font-medium text-brand-text">
-                      {item.val}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <a href="tel:+66638232303" className="group flex items-center gap-3 mb-10">
+              <Phone className="w-[18px] h-[18px] text-brand-teal shrink-0" />
+              <span className="text-[15px] font-medium text-white group-hover:text-brand-teal transition-colors">
+                {PHONE}
+              </span>
+            </a>
+
+            <SocialLinks />
+
+            <p className="text-[13px] text-[#555] mt-10 leading-relaxed">
+              535 Sukhumvit Rd, Watthana, Bangkok 10110
+              <br />
+              Mon–Fri · 09:00–18:00 ICT
+            </p>
           </motion.div>
 
         </div>

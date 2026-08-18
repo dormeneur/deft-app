@@ -27,6 +27,8 @@ export type PricingLabels = {
   popularBadge: string;
   upfrontLabel: string;
   monthLabel: string;
+  bookDemoLabel: string;
+  bookDemoCta: string;
 };
 
 export type PricingConfig = {
@@ -43,6 +45,8 @@ export const PRICING: PricingConfig = {
     popularBadge: "Most Popular",
     upfrontLabel: "upfront",
     monthLabel: "/ month",
+    bookDemoLabel: "Not sure which plan fits? See your website demo first — it's free.",
+    bookDemoCta: "Book a Free Demo",
   },
   th: {
     title: "ราคาชัดเจน ไม่มีค่าใช้จ่ายซ่อนเร้น",
@@ -51,6 +55,8 @@ export const PRICING: PricingConfig = {
     popularBadge: "ยอดนิยม",
     upfrontLabel: "ค่าเริ่มต้น",
     monthLabel: "/ เดือน",
+    bookDemoLabel: "ยังไม่แน่ใจว่าแพ็กเกจไหนเหมาะกับคุณ? ดู demo เว็บไซต์ของคุณก่อน — ฟรี",
+    bookDemoCta: "จอง Demo ฟรี",
   },
 
   plans: [
@@ -58,12 +64,12 @@ export const PRICING: PricingConfig = {
       id: "starter",
       stripeLink: "https://buy.stripe.com/00w4gz6xwcIC4Jv1X7b7y06",
       en: {
-        name: "Starter",
-        tagline: "For shops just getting started",
+        name: "Online Presence",
+        tagline: "Customers can find you, trust you, and contact you.",
         upfront: "฿2,000",
         monthly: "฿200",
         description:
-          "A clean, professional online presence that builds trust with new customers.",
+          "A clean, fast website that shows up on Google and gives customers a reason to choose you.",
         features: [
           "3–5 page website",
           "Mobile-friendly design",
@@ -72,7 +78,7 @@ export const PRICING: PricingConfig = {
           "Basic SEO setup",
           "1 revision round",
         ],
-        cta: "Get Started",
+        cta: "Start with a Demo",
       },
       th: {
         name: "Starter",
@@ -97,12 +103,12 @@ export const PRICING: PricingConfig = {
       featured: true,
       stripeLink: "https://buy.stripe.com/cNi6oHaNM6ke0tf31bb7y08",
       en: {
-        name: "Growth",
-        tagline: "For expanding businesses",
+        name: "Growth Engine",
+        tagline: "Your website actively generates new inquiries every week.",
         upfront: "฿6,000",
         monthly: "฿600",
         description:
-          "A full-featured website with backend functionality to help your business grow online.",
+          "A full-featured website with gallery, blog, booking forms, and SEO that brings in leads while you work.",
         features: [
           "Up to 10 pages",
           "Gallery / Blog section",
@@ -112,7 +118,7 @@ export const PRICING: PricingConfig = {
           "2 revision rounds",
           "Priority response",
         ],
-        cta: "Get Growing",
+        cta: "Start with a Demo",
       },
       th: {
         name: "Growth",
@@ -137,12 +143,12 @@ export const PRICING: PricingConfig = {
       id: "premium",
       stripeLink: "https://buy.stripe.com/cNi9AT4po382a3PbxHb7y07",
       en: {
-        name: "Premium",
-        tagline: "For serious businesses",
+        name: "Full Transformation",
+        tagline: "A complete digital system that works while you sleep.",
         upfront: "฿15,000",
         monthly: "฿1,500",
         description:
-          "A fully custom digital solution for businesses that take their online presence seriously.",
+          "Custom-built from scratch. Admin dashboard, payment integration, advanced SEO, and dedicated monthly support.",
         features: [
           "Unlimited pages",
           "Custom design system",
@@ -152,7 +158,7 @@ export const PRICING: PricingConfig = {
           "Unlimited revisions",
           "Dedicated monthly support",
         ],
-        cta: "Go Premium",
+        cta: "Start with a Demo",
       },
       th: {
         name: "Premium",

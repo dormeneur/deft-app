@@ -1,132 +1,93 @@
 "use client";
 
-import React, { useEffect, Suspense } from "react";
+import { useEffect, Suspense } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Container, Section } from "@/components/ui/layout-wrappers";
-import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
 import { PRICING } from "@/data/pricing";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { useBooking } from "@/components/providers/BookingProvider";
+import { track } from "@/lib/tracking";
 
 function PaymentSuccessToast() {
   const searchParams = useSearchParams();
-  
   useEffect(() => {
     if (searchParams.get("status") === "success") {
       toast.success("Payment received! We'll be in touch within 24 hours. 🎉");
       window.history.replaceState({}, "", "/pricing");
     }
   }, [searchParams]);
-
   return null;
 }
 
+// ponytail: 3 simple dark cards, ONE centered CTA at bottom — exactly Unio's layout
 export function Pricing({ className }: { className?: string }) {
   const { lang } = useLanguage();
-  const labels = PRICING[lang];
+  const { openBooking } = useBooking();
+
+  const handleCTA = () => {
+    track.ctaClick("pricing_book_demo", "pricing");
+    openBooking("pricing");
+  };
 
   return (
-    <Section id="pricing" bg="muted" className={className}>
-      <Suspense fallback={null}>
-        <PaymentSuccessToast />
-      </Suspense>
+    <Section id="pricing" className={className}>
+      <Suspense fallback={null}><PaymentSuccessToast /></Suspense>
       <Container>
-        <div className="text-center mb-20">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-heading font-medium text-brand-text mb-4"
-          >
-            {labels.title}
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-[17px] text-brand-muted max-w-[600px] mx-auto"
-          >
-            {labels.subtitle}
-          </motion.p>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-stretch">
-          {PRICING.plans.map((plan, idx) => {
+        <h2 className="section-headline mb-14">Plans</h2>
+
+        {/* 3 cards — transparent body, darker header, outline border */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+          {PRICING.plans.map((plan) => {
             const p = plan[lang];
-            const isFeatured = plan.featured;
             return (
-              <motion.div
+              <div
                 key={plan.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.15, duration: 0.6 }}
-                className={cn(
-                  "relative flex flex-col h-full rounded-3xl p-8 md:p-10 border transition-all duration-300",
-                  isFeatured
-                    ? "bg-brand-teal text-white border-transparent shadow-2xl shadow-brand-teal/20 md:scale-105 z-10"
-                    : "bg-white text-brand-text border-brand-border/80 hover:border-brand-teal/30 hover:shadow-xl"
-                )}
+                className="border border-[#222] rounded-2xl overflow-hidden flex flex-col"
               >
-                {isFeatured && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand-gold text-white text-[13px] font-bold tracking-wide py-1.5 px-4 rounded-full flex items-center gap-1.5 shadow-lg shadow-brand-gold/20">
-                    <span>★</span> {labels.popularBadge}
+                {/* Header — darker block, matches Unio */}
+                <div className="bg-[#141414] px-6 pt-6 pb-5">
+                  <h3 className="text-[17px] font-bold text-white mb-1.5">{p.name}</h3>
+                  <p className="text-[13px] text-[#666] leading-relaxed">{p.tagline}</p>
+                </div>
+
+                {/* Body — transparent (bg-black), just the outline of the card */}
+                <div className="bg-black px-6 pt-5 pb-6 flex-1 flex flex-col">
+                  {/* Price */}
+                  <div className="flex items-baseline gap-1.5 mb-0.5">
+                    <span className="text-[24px] font-black text-white leading-none">{p.upfront}</span>
+                    <span className="text-[11px] text-[#555]">upfront</span>
                   </div>
-                )}
+                  <p className="text-[12px] text-[#555] mb-5">{p.monthly} / month</p>
 
-                <h3 className="text-2xl font-bold font-sans mb-1">{p.name}</h3>
-                <p className={cn("text-[14px] mb-8", isFeatured ? "text-white/70" : "text-brand-muted")}>
-                  {p.tagline}
-                </p>
-
-                <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-4xl md:text-[44px] font-bold font-sans tracking-tight leading-none">
-                    {p.upfront}
-                  </span>
-                  <span className={cn("text-[14px] font-medium", isFeatured ? "text-white/60" : "text-brand-muted")}>
-                    {labels.upfrontLabel}
-                  </span>
+                  {/* Features */}
+                  <ul className="space-y-2.5 flex-1">
+                    {p.features.map((feat, i) => (
+                      <li key={i} className="flex items-start gap-2.5">
+                        <Check className="w-3.5 h-3.5 text-brand-teal shrink-0 mt-0.5" />
+                        <span className="text-[13px] text-[#777]">{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div className={cn("text-[16px] font-medium mb-6", isFeatured ? "text-white/80" : "text-brand-text")}>
-                  {p.monthly}{" "}
-                  <span className={cn("text-[14px]", isFeatured ? "text-white/60" : "text-brand-muted")}>
-                    {labels.monthLabel}
-                  </span>
-                </div>
-
-                <p className={cn("text-[15px] leading-relaxed pb-8 border-b", isFeatured ? "text-white/80 border-white/15" : "text-brand-muted border-brand-border")}>
-                  {p.description}
-                </p>
-
-                <ul className="py-8 space-y-4">
-                  {p.features.map((feat, fIdx) => (
-                    <li key={fIdx} className="flex items-start gap-3">
-                      <Check className={cn("w-5 h-5 shrink-0 mt-0.5", isFeatured ? "text-brand-gold-faint" : "text-brand-teal")} />
-                      <span className={cn("text-[15px]", isFeatured ? "text-white/95" : "text-brand-text")}>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <a
-                  href={plan.stripeLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(
-                    "inline-flex items-center justify-center shrink-0 w-full mt-auto h-14 text-base font-semibold rounded-xl transition-all outline-none focus-visible:ring-3 disabled:pointer-events-none disabled:opacity-50",
-                    isFeatured
-                      ? "bg-brand-gold hover:bg-brand-gold/90 text-white focus-visible:ring-brand-gold/50"
-                      : "bg-brand-teal hover:bg-brand-teal-dark text-white focus-visible:ring-brand-teal/50"
-                  )}
-                >
-                  {p.cta}
-                </a>
-              </motion.div>
+              </div>
             );
           })}
+        </div>
+
+        {/* ONE centered CTA — Unio's exact pattern */}
+        <div className="text-center pt-2 pb-2">
+          <p className="text-[15px] text-brand-muted mb-6">
+            Let&apos;s see how we can fix the issues holding your business back from more customers.
+          </p>
+          <button
+            onClick={handleCTA}
+            className="btn-wipe inline-flex items-center justify-center bg-brand-teal text-black h-12 px-9 rounded-full font-bold text-[15px] glow-teal"
+          >
+            Book an Intro Call
+          </button>
         </div>
       </Container>
     </Section>
