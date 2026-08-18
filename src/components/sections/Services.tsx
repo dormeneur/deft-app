@@ -55,17 +55,6 @@ export function Services({ className }: { className?: string }) {
             </div>
           )}
         </div>
-
-        <div className="mt-10 pt-8 border-t border-brand-border">
-          <button
-            onClick={() => { track.ctaClick("services_book_demo", "unknown"); openBooking("unknown"); }}
-            className="inline-flex items-center gap-2 text-brand-teal hover:text-brand-text text-[15px] font-bold transition-colors group"
-          >
-            Book an intro call to discuss your project
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </button>
-        </div>
-
       </Container>
     </Section>
   );

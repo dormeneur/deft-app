@@ -114,11 +114,6 @@ export const CONTENT = {
       book: "Book Your Free Demo",
       labels: { email: "Email", phone: "Phone", line: "Line", address: "Address" },
     },
-    footer: {
-      tagline: "See your website before you pay for it.",
-      rights: "© 2026 Deft. All rights reserved.",
-      by: "Designed & built by Aditya Bharti",
-    },
   },
   th: {
     nav: {
@@ -202,11 +197,6 @@ export const CONTENT = {
       sent: "ส่งข้อความแล้ว! เราจะติดต่อกลับเร็วๆ นี้ ✓",
       book: "จองประชุม Google Meet",
       labels: { email: "อีเมล", phone: "โทรศัพท์", line: "Line", address: "ที่อยู่" },
-    },
-    footer: {
-      tagline: "ธุรกิจของคุณ สวยงามบนโลกออนไลน์",
-      rights: "© 2026 Deft สงวนลิขสิทธิ์",
-      by: "ออกแบบและพัฒนาโดย Aditya Bharti",
     },
   },
 };

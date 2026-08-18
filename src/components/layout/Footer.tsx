@@ -65,21 +65,25 @@ export function Footer() {
         </div>
       </Container>
 
-      {/* Bottom: wordmark left + copyright right, same baseline */}
-      <div className="flex items-end justify-between overflow-hidden leading-none px-4 md:px-6">
-        {/* Wordmark */}
-        <p
-          className="font-heading font-semibold text-[#111] select-none pointer-events-none shrink-0"
-          style={{ fontSize: "clamp(6rem, 24vw, 20rem)", letterSpacing: "-0.03em", lineHeight: "0.85" }}
-          aria-hidden="true"
-        >
-          Deft
-        </p>
+      {/* Bottom bar: border ties it to the block above; same horizontal
+          padding as Container so the wordmark and copyright line up with the
+          content above instead of floating at a different inset. */}
+      <div className="border-t border-brand-border">
+        <div className="flex items-end justify-between overflow-hidden leading-none px-6 md:px-10 pt-6">
+          {/* Wordmark */}
+          <p
+            className="font-heading font-semibold text-[#111] select-none pointer-events-none shrink-0"
+            style={{ fontSize: "clamp(6rem, 24vw, 20rem)", letterSpacing: "-0.03em", lineHeight: "0.85" }}
+            aria-hidden="true"
+          >
+            Deft
+          </p>
 
-        {/* Copyright — aligns to same bottom edge as wordmark */}
-        <span className="text-[13px] font-bold text-white pb-2 shrink-0">
-          ©2026 · Design by Aditya Bharti
-        </span>
+          {/* Copyright — muted so it reads as fine print, not a headline */}
+          <span className="text-[13px] font-medium text-[#555] pb-4 shrink-0">
+            ©2026 · Design by Aditya Bharti
+          </span>
+        </div>
       </div>
     </footer>
   );

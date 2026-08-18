@@ -39,11 +39,6 @@ export function Hero() {
               View Case Studies
             </Link>
           </div>
-
-          {/* Trust line */}
-          <p className="text-[13px] text-[#555]">
-            Trusted by Bangkok businesses · Emporium Tailors · 3× more booking inquiries after launch
-          </p>
         </div>
       </div>
     </section>
