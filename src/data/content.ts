@@ -87,6 +87,17 @@ export const CONTENT = {
           visualData: "/portfolio/adityabharti.png",
         },
         {
+          id: "vhelp",
+          name: "VHELP",
+          category: "Android App & Landing Site",
+          desc: "The all-in-one campus app for VIT Chennai students — attendance, exams and marks from VTOP, next to everything else used on campus.",
+          stats: ["1,260+ Daily Users", "Android App", "VIT Chennai"],
+          cta: "Visit Site",
+          href: "https://app.vhelpcc.com",
+          visualType: "image",
+          visualData: "/portfolio/vhelpcc.png",
+        },
+        {
           id: "next",
           name: "Your Business",
           category: "Premium Digital Presence",
