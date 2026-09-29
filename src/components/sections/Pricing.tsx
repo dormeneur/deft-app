@@ -36,7 +36,10 @@ export function Pricing({ className }: { className?: string }) {
       <Suspense fallback={null}><PaymentSuccessToast /></Suspense>
       <Container>
 
-        <h2 className="section-headline mb-14">Plans</h2>
+        <h2 className="section-headline mb-4">Plans</h2>
+        <p className="text-[16px] text-[#999] max-w-[560px] mb-14">
+          The demo is free. If you approve it, the upfront fee is due before we build the full site.
+        </p>
 
         {/* 3 cards — transparent body, darker header, outline border */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">

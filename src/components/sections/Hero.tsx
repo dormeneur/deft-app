@@ -18,13 +18,12 @@ export function Hero() {
               We help Bangkok businesses get more customers online
             </h1>
 
-            <p className="text-[16px] md:text-[17px] text-[#999] max-w-[560px] leading-relaxed mb-4">
-              We design and build websites, booking systems, and digital tools that drive
-              sales and qualified leads — without a full in-house team.
+            <p className="text-[22px] md:text-[26px] text-brand-teal font-bold leading-tight max-w-[560px] mb-3">
+              Demo first. Pay only if you love it.
             </p>
 
-            <p className="text-[16px] md:text-[17px] text-white font-semibold max-w-[560px] leading-relaxed mb-8">
-              Demo first. Pay only if you love it.
+            <p className="text-[16px] md:text-[17px] text-[#999] max-w-[560px] leading-relaxed mb-8">
+              We build a working demo of your website and show it to you before you pay anything.
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4">
@@ -43,7 +42,7 @@ export function Hero() {
             </div>
 
             <p className="text-[14px] text-[#999]">
-              You see your demo on the call. Pay nothing until you approve it.
+              Free 30-minute call. No commitment.
             </p>
           </div>
 
