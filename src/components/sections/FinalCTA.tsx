@@ -31,19 +31,23 @@ export function FinalCTA() {
                     <h2 className="display-headline mb-4">
                         Ready to stop leaving money on the table?
                     </h2>
-                    <p className="text-[17px] text-[#888] max-w-[500px] mx-auto mb-8">
+                    <p className="text-[17px] text-[#999] max-w-[500px] mx-auto mb-8">
                         Let&apos;s see how we can fix the issues holding you back from driving more revenue today.
                     </p>
                     <button
                         onClick={() => { track.ctaClick("final_cta_book", "final_cta"); openBooking("final_cta"); }}
                         className="btn-wipe inline-flex items-center justify-center bg-brand-teal text-black font-bold text-[16px] h-12 px-10 rounded-full glow-teal"
                     >
-                        Book an Intro Call
+                        Book a free 30-min call
                     </button>
+                    <p className="mt-4 text-[14px] text-[#999]">
+                        You see your demo on the call. Pay nothing until you approve it.
+                    </p>
                 </div>
 
                 {/* Cal.com inline — every "book a call" button on the page scrolls here */}
-                <div id="book-calendar" className="scroll-mt-24">
+                <div id="book-calendar" className="relative scroll-mt-24">
+                    <p className="absolute inset-0 grid place-items-center text-[14px] text-[#999]">Loading calendar…</p>
                     <Cal
                         namespace={CAL_NAMESPACE}
                         calLink={CAL_LINK}

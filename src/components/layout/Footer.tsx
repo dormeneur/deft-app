@@ -37,7 +37,7 @@ export function Footer() {
               type="button"
               onClick={copyEmail}
               aria-label={`Copy email address ${EMAIL}`}
-              className="group flex items-center gap-2.5 mb-6"
+              className="group flex min-h-11 items-center gap-2.5 mb-4"
             >
               <Mail className="w-[18px] h-[18px] text-brand-teal shrink-0" />
               <span className="text-[15px] font-medium text-white group-hover:text-brand-teal transition-colors">
@@ -45,7 +45,7 @@ export function Footer() {
               </span>
               {copied
                 ? <Check className="w-4 h-4 text-brand-teal shrink-0" />
-                : <Copy className="w-4 h-4 text-[#555] group-hover:text-brand-teal transition-colors shrink-0" />}
+                : <Copy className="w-4 h-4 text-[#888] group-hover:text-brand-teal transition-colors shrink-0" />}
             </button>
 
             <SocialLinks />
@@ -53,13 +53,13 @@ export function Footer() {
 
           <div className="lg:text-right lg:max-w-[380px]">
             <p className="text-[26px] md:text-[30px] font-bold text-white leading-tight mb-4">
-              Be quick!<br />The spots are almost gone
+              Prefer to talk first?
             </p>
             <button
               onClick={() => { track.ctaClick("footer_book_demo", "final_cta"); openBooking("final_cta"); }}
-              className="text-[14px] font-semibold text-brand-teal hover:text-white underline underline-offset-4 transition-colors"
+              className="inline-flex min-h-11 items-center text-[14px] font-semibold text-brand-teal hover:text-white underline underline-offset-4 transition-colors"
             >
-              Book a Free Demo
+              Book a free 30-min call
             </button>
           </div>
         </div>
@@ -80,7 +80,7 @@ export function Footer() {
           </p>
 
           {/* Copyright — muted so it reads as fine print, not a headline */}
-          <span className="text-[13px] font-medium text-[#555] pb-4 shrink-0">
+          <span className="text-[13px] font-medium text-[#888] pb-4 shrink-0">
             ©2026 · Design by Aditya Bharti
           </span>
         </div>

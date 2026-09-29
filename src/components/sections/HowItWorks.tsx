@@ -1,12 +1,10 @@
 "use client";
 
-import { MessageSquare, MonitorPlay, Rocket } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Container, Section } from "@/components/ui/layout-wrappers";
 
 // ponytail: the horizontal accordion hid the copy behind a hover and read
 // as sideways text at rest — process steps want to be legible immediately.
-const STEP_ICONS = [MessageSquare, MonitorPlay, Rocket];
 
 export function HowItWorks({ className }: { className?: string }) {
   const { t } = useLanguage();
@@ -15,16 +13,11 @@ export function HowItWorks({ className }: { className?: string }) {
     <Section id="how" className={className}>
       <Container>
 
-        <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#555] mb-6">
-          Process
-        </div>
-
         <h2 className="section-headline mb-4 max-w-[500px]">{t.how.title}</h2>
         <p className="text-[17px] text-brand-muted max-w-[520px] mb-14">{t.how.sub}</p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {t.how.steps.map((step, idx) => {
-            const Icon = STEP_ICONS[idx];
+          {t.how.steps.map((step) => {
             return (
               <div
                 key={step.n}
@@ -38,8 +31,8 @@ export function HowItWorks({ className }: { className?: string }) {
                   {step.n}
                 </span>
 
-                <span className="relative w-11 h-11 rounded-xl bg-brand-teal/10 border border-brand-teal/20 flex items-center justify-center text-brand-teal mb-6 group-hover:bg-brand-teal group-hover:text-black transition-colors duration-300">
-                  <Icon className="w-5 h-5" />
+                <span className="relative block text-[15px] font-bold text-brand-teal mb-6">
+                  Step {step.n}
                 </span>
 
                 <h3 className="relative text-[19px] md:text-[21px] font-bold text-white leading-tight mb-3">

@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-29T00:00:00Z",
+  "title": "Design System: Deft",
+  "extensions": {
+    "colorMeta": {
+      "signal-green": { "role": "primary", "displayName": "Signal Green", "canonical": "#4ADE80", "tonalRamp": ["#052E16","#14532D","#166534","#16A34A","#22C55E","#4ADE80","#86EFAC","#DCFCE7"] },
+      "lamp-amber": { "role": "secondary", "displayName": "Lamp Amber", "canonical": "#F59E0B", "tonalRamp": ["#451A03","#78350F","#92400E","#B45309","#D97706","#F59E0B","#FCD34D","#FEF3C7"] },
+      "night": { "role": "neutral", "displayName": "Night", "canonical": "#000000", "tonalRamp": ["#000000","#0A0A0A","#111111","#1A1A1A","#222222","#888888","#999999","#F5F5F3"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headline only." },
+      "headline": { "displayName": "Headline", "purpose": "Section titles." }
+    },
+    "shadows": [
+      { "name": "glow-teal", "value": "0 0 20px rgba(74,222,128,0.30)", "purpose": "Primary CTA emphasis." },
+      { "name": "wipe-hover", "value": "0 0 24px rgba(74,222,128,0.35)", "purpose": ".btn-wipe on hover." }
+    ],
+    "motion": [
+      { "name": "ease-out-quint", "value": "cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Wipe, lift and pill transitions." }
+    ],
+    "breakpoints": [
+      { "name": "md", "value": "768px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Green pill CTA that floods white on hover.",
+      "html": "<button class=\"ds-btn\">Book a call</button>",
+      "css": ".ds-btn{position:relative;overflow:hidden;background:#4ADE80;color:#000;border:0;border-radius:9999px;padding:14px 28px;font-weight:700;font-family:inherit;cursor:pointer;transition:transform .3s cubic-bezier(.23,1,.32,1),box-shadow .3s ease}.ds-btn:hover{transform:scale(1.04);box-shadow:0 0 24px rgba(74,222,128,.35)}.ds-btn:focus-visible{outline:2px solid #4ADE80;outline-offset:3px}.ds-btn:active{transform:scale(.98)}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Dark pill with hairline border; goes green on hover.",
+      "html": "<button class=\"ds-btn-outline\">See our work</button>",
+      "css": ".ds-btn-outline{background:#111;color:#fff;border:1px solid #222;border-radius:9999px;padding:14px 28px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .3s ease,color .3s ease,transform .3s ease}.ds-btn-outline:hover{background:#4ADE80;color:#000;transform:scale(1.04)}.ds-btn-outline:focus-visible{outline:2px solid #4ADE80;outline-offset:3px}"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Surface card with hairline border.",
+      "html": "<div class=\"ds-card\"><h3>Emporium Tailors</h3><p>Web Design &amp; SEO</p></div>",
+      "css": ".ds-card{background:#111;color:#fff;border:1px solid #222;border-radius:12px;padding:24px;transition:border-color .3s ease}.ds-card h3{margin:0 0 6px;font-weight:700}.ds-card p{margin:0;color:#888}.ds-card:hover{border-color:#4ADE80}"
+    },
+    {
+      "name": "Social Pill",
+      "kind": "chip",
+      "refersTo": "social-pill",
+      "description": "Round icon that takes on brand colour on hover.",
+      "html": "<a class=\"ds-pill\" href=\"#\">@ifnotadi</a>",
+      "css": ".ds-pill{display:inline-flex;align-items:center;height:40px;padding:0 14px;border:1px solid #222;border-radius:9999px;background:#111;color:#888;text-decoration:none;transition:background .25s ease,color .25s ease,transform .25s ease}.ds-pill:hover,.ds-pill:focus-visible{background:#4ADE80;color:#000;transform:translateY(-2px);outline:none}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Night Shop Window",
+    "overview": "Deft is a lit storefront on a dark Bangkok street: a pure black canvas with a single green light that draws the eye and says open. Everything else recedes into near-black surfaces and grey type, so the one thing that glows is unmistakable.",
+    "keyCharacteristics": ["Pure black ground, near-black tonal surfaces, hairline borders.", "One accent (signal green) carries every action; amber is a quiet tag colour.", "Hover = flood of colour plus a small lift. Flat at rest.", "Dark theme only."],
+    "rules": [
+      { "name": "The One Light Rule", "body": "Green is the only colour that means act. If two things glow green at rest, one is wrong.", "section": "colors" },
+      { "name": "The Flat-Until-Touched Rule", "body": "No resting shadows. Glow and lift are earned by hover or focus.", "section": "elevation" }
+    ],
+    "dos": ["Do use Signal Green (#4ADE80) for the single most important action on a screen.", "Do reuse .btn-wipe, .card-wipe, .social-pill before writing bespoke hover styling."],
+    "donts": ["Don't add a light theme or a second accent colour.", "Don't put resting shadows on cards or buttons.", "Don't add a booking modal or popup."]
+  }
+}

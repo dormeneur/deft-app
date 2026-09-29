@@ -52,7 +52,7 @@ export function Services({ className }: { className?: string }) {
         <div className="md:hidden flex justify-center mt-4">
           <button
             onClick={() => setExpanded((v) => !v)}
-            className="inline-flex items-center gap-1.5 text-brand-teal text-[14px] font-bold"
+            className="inline-flex min-h-11 items-center gap-1.5 text-brand-teal text-[14px] font-bold"
           >
             {expanded ? "Show less" : "Show all services"}
             <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`} />

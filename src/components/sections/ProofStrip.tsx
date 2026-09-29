@@ -19,7 +19,7 @@ export function ProofStrip() {
             >
                 <div className="marquee-track">
                     {items.map((name, idx) => (
-                        <span key={idx} className="inline-block mx-8 text-[12px] font-medium text-[#444] whitespace-nowrap">
+                        <span key={idx} className="inline-block mx-8 text-[14px] font-medium text-[#8a8a8a] whitespace-nowrap">
                             {name}
                         </span>
                     ))}

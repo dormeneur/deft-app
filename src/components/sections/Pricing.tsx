@@ -49,8 +49,13 @@ export function Pricing({ className }: { className?: string }) {
               >
                 {/* Header — darker block, matches Unio */}
                 <div className="bg-[#141414] px-6 pt-6 pb-5">
-                  <h3 className="text-[17px] font-bold text-white mb-1.5">{p.name}</h3>
-                  <p className="text-[13px] text-[#666] leading-relaxed">{p.tagline}</p>
+                  <h3 className="text-[17px] font-bold text-white mb-1.5">
+                    {p.name}
+                    {plan.id === "starter" && (
+                      <span className="ml-2 align-middle rounded-full bg-brand-teal-faint px-2 py-0.5 text-[12px] font-semibold text-brand-teal">Most owners start here</span>
+                    )}
+                  </h3>
+                  <p className="text-[14px] text-[#999] leading-relaxed">{p.tagline}</p>
                 </div>
 
                 {/* Body — transparent (bg-black), just the outline of the card */}
@@ -58,19 +63,25 @@ export function Pricing({ className }: { className?: string }) {
                   {/* Price */}
                   <div className="flex items-baseline gap-1.5 mb-0.5">
                     <span className="text-[24px] font-black text-white leading-none">{p.upfront}</span>
-                    <span className="text-[11px] text-[#555]">upfront</span>
+                    <span className="text-[14px] text-[#999]">upfront</span>
                   </div>
-                  <p className="text-[12px] text-[#555] mb-5">{p.monthly} / month</p>
+                  <p className="text-[14px] text-[#999] mb-5">{p.monthly} / month</p>
 
                   {/* Features */}
                   <ul className="space-y-2.5 flex-1">
                     {p.features.map((feat, i) => (
                       <li key={i} className="flex items-start gap-2.5">
                         <Check className="w-3.5 h-3.5 text-brand-teal shrink-0 mt-0.5" />
-                        <span className="text-[13px] text-[#777]">{feat}</span>
+                        <span className="text-[14px] text-[#b0b0b0]">{feat}</span>
                       </li>
                     ))}
                   </ul>
+                  <button
+                    onClick={handleCTA}
+                    className="btn-wipe btn-wipe-teal mt-6 inline-flex h-11 items-center justify-center rounded-full border border-[#333] bg-[#111] px-6 text-[14px] font-semibold text-white"
+                  >
+                    Book a call about this plan
+                  </button>
                 </div>
               </div>
             );
@@ -86,7 +97,7 @@ export function Pricing({ className }: { className?: string }) {
             onClick={handleCTA}
             className="btn-wipe inline-flex items-center justify-center bg-brand-teal text-black h-12 px-9 rounded-full font-bold text-[15px] glow-teal"
           >
-            Book an Intro Call
+            Book a free 30-min call
           </button>
         </div>
       </Container>

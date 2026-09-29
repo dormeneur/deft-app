@@ -76,7 +76,7 @@ export function Navbar() {
                 Deft<span className="text-brand-teal">.</span>
               </Link>
               <button onClick={() => setMobileOpen(false)}
-                className="text-[13px] font-bold tracking-[0.12em] uppercase text-[#666]">
+                className="text-[13px] font-bold tracking-[0.12em] uppercase text-[#999]">
                 CLOSE
               </button>
             </div>
@@ -96,7 +96,7 @@ export function Navbar() {
                 onClick={() => { setMobileOpen(false); handleBooking(); }}
                 className="btn-wipe mt-8 bg-brand-teal text-black font-black text-[18px] h-14 rounded-full glow-teal"
               >
-                Book an Intro Call
+                Book a free 30-min call
               </button>
             </div>
           </motion.div>
@@ -129,7 +129,7 @@ export function Navbar() {
             onClick={() => setMenuOpen((v) => !v)}
             aria-expanded={menuOpen}
             aria-haspopup="true"
-            className="flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-[0.1em] text-[#666] hover:text-white transition-colors py-2"
+            className="flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-[0.1em] text-[#999] hover:text-white transition-colors py-2"
           >
             MENU
             <ChevronDown
@@ -179,7 +179,7 @@ export function Navbar() {
             onClick={handleBooking}
             className="btn-wipe hidden lg:flex items-center justify-center bg-brand-teal text-black font-bold text-[14px] px-5 py-2.5 rounded-full glow-teal"
           >
-            Book an Intro Call
+            Book a free 30-min call
           </button>
 
           <button
