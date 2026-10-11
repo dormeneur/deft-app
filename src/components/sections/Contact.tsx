@@ -3,28 +3,34 @@
 import React, { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Container, Section } from "@/components/ui/layout-wrappers";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { SocialLinks } from "@/components/ui/SocialLinks";
-import { Mail, Phone, Copy, Check } from "lucide-react";
-import { motion } from "framer-motion";
+import { Copy, Check } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import emailjs from "@emailjs/browser";
 import { toast } from "sonner";
+import { track } from "@/lib/tracking";
 
 const EMAIL = "work.adityabharti@gmail.com";
-const PHONE = "+66 063 823 2303";
+const PHONE = "+66 63 823 2303";
 
 const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
+  name: z.string().min(2, "Please enter your name"),
   email: z.string().email("Please enter a valid email address"),
-  msg: z.string().min(10, "Message must be at least 10 characters"),
+  msg: z.string().min(10, "Tell us a little more (at least 10 characters)"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
+
+const FIELD = "bg-brand-surface border-brand-border text-[16px] md:text-[16px] text-white placeholder:text-brand-subtle";
+
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null;
+  return <p id={id} role="alert" className="text-red-400 text-[13px] mt-2">{message}</p>;
+}
 
 export function Contact({ className }: { className?: string }) {
   const { t } = useLanguage();
@@ -75,14 +81,15 @@ export function Contact({ className }: { className?: string }) {
             { from_name: data.name, user_email: data.email },
             process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
           )
-          .catch((e: unknown) =>console.error("EmailJS auto-reply failed:", e));
+          .catch((e: unknown) => console.error("EmailJS auto-reply failed:", e));
       }
+      track.formSubmission("success");
       toast.success(t.contact.sent);
       reset();
     } catch (error: unknown) {
-      const err = error as { text?: string; message?: string };
       console.error("EmailJS Error Details:", error);
-      toast.error(`Error: ${err?.text || err?.message || "Failed to send message."}`);
+      track.formSubmission("error");
+      toast.error(`Your message didn't send. Please email us at ${EMAIL} instead.`);
     } finally {
       setIsSending(false);
     }
@@ -91,100 +98,92 @@ export function Contact({ className }: { className?: string }) {
   return (
     <Section id="contact" className={className}>
       <Container>
-        {/* Heading spans both columns so they start on the same line */}
-        <h2 className="section-headline mb-4">Send us a message</h2>
-        <p className="text-[17px] text-brand-muted mb-14 max-w-[460px]">
-          Tell us what you need. We reply within a day — or scroll down and
-          pick a time that suits you.
+        <h1 className="display-headline">Send us a message.</h1>
+        <p className="mt-6 text-[17px] md:text-[19px] text-brand-muted max-w-[32rem] leading-relaxed">
+          Tell us what you need and we&apos;ll reply within a day. Or scroll
+          down and pick a time for a call.
         </p>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 lg:gap-20 items-start">
+        <div className="mt-14 md:mt-20 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-14 lg:gap-20 items-start">
 
-          {/* Form */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-[620px]">
-              {/* Name + email share a row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <Input
-                    {...register("name")}
-                    placeholder={t.contact.fields.name}
-                    className="h-12 bg-brand-surface border-brand-border text-[15px] px-4"
-                  />
-                  {errors.name && <p className="text-red-400 text-xs mt-1.5">{errors.name.message}</p>}
-                </div>
-                <div>
-                  <Input
-                    {...register("email")}
-                    type="email"
-                    placeholder={t.contact.fields.email}
-                    className="h-12 bg-brand-surface border-brand-border text-[15px] px-4"
-                  />
-                  {errors.email && <p className="text-red-400 text-xs mt-1.5">{errors.email.message}</p>}
-                </div>
-              </div>
-
+          <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6 max-w-[620px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <Textarea
-                  {...register("msg")}
-                  placeholder={t.contact.fields.msg}
-                  rows={9}
-                  className="resize-none bg-brand-surface border-brand-border text-[15px] p-4 min-h-[220px]"
+                <label htmlFor="contact-name" className="block text-[14px] font-medium text-white mb-2">
+                  {t.contact.fields.name}
+                </label>
+                <Input
+                  id="contact-name"
+                  autoComplete="name"
+                  aria-invalid={!!errors.name}
+                  aria-describedby={errors.name ? "contact-name-error" : undefined}
+                  {...register("name")}
+                  className={`h-12 px-4 ${FIELD}`}
                 />
-                {errors.msg && <p className="text-red-400 text-xs mt-1.5">{errors.msg.message}</p>}
+                <FieldError id="contact-name-error" message={errors.name?.message} />
               </div>
+              <div>
+                <label htmlFor="contact-email" className="block text-[14px] font-medium text-white mb-2">
+                  {t.contact.fields.email}
+                </label>
+                <Input
+                  id="contact-email"
+                  type="email"
+                  autoComplete="email"
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? "contact-email-error" : undefined}
+                  {...register("email")}
+                  className={`h-12 px-4 ${FIELD}`}
+                />
+                <FieldError id="contact-email-error" message={errors.email?.message} />
+              </div>
+            </div>
 
-              <Button
-                disabled={isSending}
-                type="submit"
-                className="btn-wipe h-11 px-8 bg-brand-teal text-black font-bold text-[14px] rounded-full glow-teal"
-              >
-                {isSending ? t.contact.sending : t.contact.send}
-              </Button>
-            </form>
-          </motion.div>
+            <div>
+              <label htmlFor="contact-msg" className="block text-[14px] font-medium text-white mb-2">
+                What do you need?
+              </label>
+              <Textarea
+                id="contact-msg"
+                rows={8}
+                placeholder={t.contact.fields.msg}
+                aria-invalid={!!errors.msg}
+                aria-describedby={errors.msg ? "contact-msg-error" : undefined}
+                {...register("msg")}
+                className={`resize-none p-4 min-h-[200px] ${FIELD}`}
+              />
+              <FieldError id="contact-msg-error" message={errors.msg?.message} />
+            </div>
+
+            <button disabled={isSending} type="submit" className="btn-wipe btn-primary disabled:opacity-60 disabled:pointer-events-none">
+              {isSending ? t.contact.sending : t.contact.send}
+            </button>
+          </form>
 
           {/* Direct lines — plain rows, no card stack */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-          >
+          <div className="text-[16px] text-brand-muted leading-relaxed">
             <button
               type="button"
               onClick={copyEmail}
-              className="group flex items-center gap-3 text-left mb-5"
+              aria-label={`Copy email address ${EMAIL}`}
+              className="group flex items-center gap-2 py-2 -mt-2 text-white text-left break-all"
             >
-              <Mail className="w-[18px] h-[18px] text-brand-teal shrink-0" />
-              <span className="text-[15px] font-medium text-white group-hover:text-brand-teal transition-colors">
-                {EMAIL}
-              </span>
+              <span className="link-rule">{EMAIL}</span>
               {copied
                 ? <Check className="w-4 h-4 text-brand-teal shrink-0" />
-                : <Copy className="w-4 h-4 text-[#555] group-hover:text-brand-teal transition-colors shrink-0" />}
+                : <Copy className="w-4 h-4 text-brand-subtle group-hover:text-brand-teal transition-colors shrink-0" />}
             </button>
 
-            <a href="tel:+66638232303" className="group flex items-center gap-3 mb-10">
-              <Phone className="w-[18px] h-[18px] text-brand-teal shrink-0" />
-              <span className="text-[15px] font-medium text-white group-hover:text-brand-teal transition-colors">
-                {PHONE}
-              </span>
-            </a>
+            <a href="tel:+66638232303" className="inline-block py-2 text-white hover:text-brand-teal transition-colors">{PHONE}</a>
 
-            <SocialLinks />
+            <SocialLinks className="mt-6" />
 
-            <p className="text-[13px] text-[#555] mt-10 leading-relaxed">
+            <p className="mt-8 text-[15px]">
               535 Sukhumvit Rd, Watthana, Bangkok 10110
               <br />
               Mon–Fri · 09:00–18:00 ICT
             </p>
-          </motion.div>
+          </div>
 
         </div>
       </Container>

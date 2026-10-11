@@ -1,17 +1,16 @@
 "use client";
 
-import { Container } from "@/components/ui/layout-wrappers";
-import { useBooking } from "@/components/providers/BookingProvider";
-import { track } from "@/lib/tracking";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Mail, Copy, Check } from "lucide-react";
+import { Copy, Check } from "lucide-react";
+import { Container } from "@/components/ui/layout-wrappers";
 import { SocialLinks } from "@/components/ui/SocialLinks";
+import { NAV_LINKS } from "@/components/layout/Navbar";
 
 const EMAIL = "work.adityabharti@gmail.com";
 
 export function Footer() {
-  const { openBooking } = useBooking();
   const [copied, setCopied] = useState(false);
 
   const copyEmail = async () => {
@@ -26,62 +25,58 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-black border-t border-[#1f1f1f]">
-      <Container className="pt-16 pb-10">
-
-        {/* Contact left, urgency CTA right — nav lives in the navbar menu now */}
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-12">
+    <footer className="bg-black border-t border-brand-border">
+      <Container className="pt-16 pb-14">
+        <div className="grid grid-cols-1 md:grid-cols-[1.4fr_1fr_1fr] gap-12">
 
           <div>
+            <p className="font-heading text-[22px] font-semibold text-white leading-snug tracking-tight max-w-[340px]">
+              A small Bangkok studio that builds websites and business software.
+            </p>
+            <SocialLinks className="mt-7" />
+          </div>
+
+          <nav aria-label="Footer">
+            <ul className="-my-2">
+              {NAV_LINKS.map(({ label, href }) => (
+                <li key={href}>
+                  <Link href={href} className="inline-block py-2 text-[15px] text-brand-muted hover:text-white transition-colors">
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="text-[15px] text-brand-muted leading-relaxed">
             <button
               type="button"
               onClick={copyEmail}
               aria-label={`Copy email address ${EMAIL}`}
-              className="group flex items-center gap-2.5 mb-6"
+              className="group flex items-center gap-2 py-2 -mt-2 text-white break-all text-left"
             >
-              <Mail className="w-[18px] h-[18px] text-brand-teal shrink-0" />
-              <span className="text-[15px] font-medium text-white group-hover:text-brand-teal transition-colors">
-                {EMAIL}
-              </span>
+              <span className="link-rule">{EMAIL}</span>
               {copied
                 ? <Check className="w-4 h-4 text-brand-teal shrink-0" />
-                : <Copy className="w-4 h-4 text-[#555] group-hover:text-brand-teal transition-colors shrink-0" />}
+                : <Copy className="w-4 h-4 text-brand-subtle group-hover:text-brand-teal transition-colors shrink-0" />}
             </button>
-
-            <SocialLinks />
-          </div>
-
-          <div className="lg:text-right lg:max-w-[380px]">
-            <p className="text-[26px] md:text-[30px] font-bold text-white leading-tight mb-4">
-              Be quick!<br />The spots are almost gone
-            </p>
-            <button
-              onClick={() => { track.ctaClick("footer_book_demo", "final_cta"); openBooking("final_cta"); }}
-              className="text-[14px] font-semibold text-brand-teal hover:text-white underline underline-offset-4 transition-colors"
-            >
-              Book a Free Demo
-            </button>
+            <a href="tel:+66638232303" className="inline-block py-2 hover:text-white transition-colors">+66 63 823 2303</a>
+            <p className="mt-1">Bangkok, Thailand</p>
           </div>
         </div>
       </Container>
 
-      {/* Bottom bar: border ties it to the block above; same horizontal
-          padding as Container so the wordmark and copyright line up with the
-          content above instead of floating at a different inset. */}
-      <div className="border-t border-brand-border">
-        <div className="flex items-end justify-between overflow-hidden leading-none px-6 md:px-10 pt-6">
-          {/* Wordmark */}
+      <div className="border-t border-brand-border overflow-hidden">
+        <div className="mx-auto w-full max-w-[1280px] px-6 md:px-10 pt-6 flex flex-col-reverse sm:flex-row sm:items-end sm:justify-between gap-6 leading-none">
           <p
-            className="font-heading font-semibold text-[#111] select-none pointer-events-none shrink-0"
-            style={{ fontSize: "clamp(6rem, 24vw, 20rem)", letterSpacing: "-0.03em", lineHeight: "0.85" }}
+            className="font-heading font-bold text-[#141414] select-none pointer-events-none"
+            style={{ fontSize: "clamp(6rem, 24vw, 19rem)", letterSpacing: "-0.04em", lineHeight: "0.8" }}
             aria-hidden="true"
           >
             Deft
           </p>
-
-          {/* Copyright — muted so it reads as fine print, not a headline */}
-          <span className="text-[13px] font-medium text-[#555] pb-4 shrink-0">
-            ©2026 · Design by Aditya Bharti
+          <span className="text-[13px] text-brand-subtle sm:pb-5 shrink-0 sm:text-right">
+            © 2026 Deft · Design by Aditya Bharti
           </span>
         </div>
       </div>

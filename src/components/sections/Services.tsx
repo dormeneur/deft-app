@@ -1,64 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import type { MouseEvent } from "react";
+import { Asterisk } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import { Container, Section } from "@/components/ui/layout-wrappers";
-import { useBooking } from "@/components/providers/BookingProvider";
-import { track } from "@/lib/tracking";
-import { ArrowRight, ChevronDown } from "lucide-react";
 
-// ponytail: only mobile needs the collapse — desktop's 2-col grid is already
-// short. A max-h + fade mask hides items 3+ instead of slicing the array, so
-// the full list stays in the DOM (SEO, no layout jump) and only the visual
-// height changes at md.
-const COLLAPSED_MAX_H = "22rem";
+// A thick, fast ticker of everything Deft builds. The list is rendered twice
+// so the -50% loop is seamless; the second copy is hidden from screen readers.
 
-export function Services({ className }: { className?: string }) {
+// Hover slows the band rather than stopping it. playbackRate keeps the track
+// where it is — changing animation-duration in CSS would make it jump.
+const setSpeed = (rate: number) => (e: MouseEvent<HTMLElement>) => {
+  e.currentTarget.getAnimations({ subtree: true }).forEach((a) => { a.playbackRate = rate; });
+};
+
+export function Services() {
   const { t } = useLanguage();
-  const { openBooking } = useBooking();
-  const [expanded, setExpanded] = useState(false);
 
   return (
-    <Section id="services" className={className}>
-      <Container>
+    <section id="services" aria-labelledby="services-title" onMouseEnter={setSpeed(0.3)}
+      onMouseLeave={setSpeed(1)}
+      className="bg-brand-bg border-t border-brand-border overflow-hidden py-6 md:py-9"
+    >
+      <h2 id="services-title" className="sr-only">{t.services.title}</h2>
 
-        <h2 className="section-headline mb-14">Services</h2>
-
-        {/* Unio-style: service name left (bold), outcome right (muted), separator between */}
-        <div className="relative">
-          <div
-            className="divide-y divide-brand-border overflow-hidden md:!max-h-none transition-[max-height] duration-500 ease-in-out"
-            style={{ maxHeight: expanded ? "2000px" : COLLAPSED_MAX_H }}
-          >
-            {t.services.items.map((srv, idx) => (
-              <div key={idx} className="group grid grid-cols-1 md:grid-cols-2 gap-4 py-8">
-                <h3 className="text-[22px] md:text-[26px] font-bold text-brand-text group-hover:text-brand-teal transition-colors">
-                  {srv.title}
-                </h3>
-                <div className="md:pl-8">
-                  <p className="text-[15px] text-brand-muted leading-relaxed">{srv.desc}</p>
-                </div>
-              </div>
+      <div className="ticker">
+        {[0, 1].map((copy) => (
+          <ul key={copy} aria-hidden={copy === 1} className="flex shrink-0 items-center">
+            {t.services.items.map((srv) => (
+              <li
+                key={srv.title}
+                className="flex items-center whitespace-nowrap font-heading font-medium tracking-tight text-white text-[clamp(2rem,4.6vw,3.75rem)] leading-none"
+              >
+                {srv.title}
+                <Asterisk aria-hidden="true" className="mx-5 md:mx-8 size-[0.7em] shrink-0 text-brand-teal" />
+              </li>
             ))}
-          </div>
-
-          {/* Fade only while collapsed — the toggle itself always shows,
-              so "show all" can turn back into "show less" */}
-          {!expanded && (
-            <div className="md:hidden absolute inset-x-0 bottom-9 h-20 bg-gradient-to-t from-brand-bg to-transparent pointer-events-none" />
-          )}
-        </div>
-
-        <div className="md:hidden flex justify-center mt-4">
-          <button
-            onClick={() => setExpanded((v) => !v)}
-            className="inline-flex items-center gap-1.5 text-brand-teal text-[14px] font-bold"
-          >
-            {expanded ? "Show less" : "Show all services"}
-            <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`} />
-          </button>
-        </div>
-      </Container>
-    </Section>
+          </ul>
+        ))}
+      </div>
+    </section>
   );
 }

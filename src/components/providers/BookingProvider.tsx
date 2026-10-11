@@ -2,6 +2,7 @@
 
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useLenis } from "lenis/react";
 import { track, type BookingSource } from "@/lib/tracking";
 
 /**
@@ -20,6 +21,7 @@ import { track, type BookingSource } from "@/lib/tracking";
  */
 export function useBooking() {
   const router = useRouter();
+  const lenis = useLenis();
 
   const openBooking = useCallback(
     (source: BookingSource = "unknown") => {
@@ -27,13 +29,16 @@ export function useBooking() {
 
       const calendar = document.getElementById("book-calendar");
       if (calendar) {
-        calendar.scrollIntoView({ behavior: "smooth", block: "start" });
+        // Lenis owns the scroll position when it is running; a native smooth
+        // scroll would fight it. Offset matches the calendar's scroll-mt-24.
+        if (lenis) lenis.scrollTo(calendar, { offset: -96 });
+        else calendar.scrollIntoView({ block: "start" });
         return;
       }
 
       router.push("/contact#book-calendar");
     },
-    [router]
+    [router, lenis]
   );
 
   return { openBooking };

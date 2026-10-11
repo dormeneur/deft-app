@@ -1,177 +1,139 @@
-"use client";
-
-import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Container, Section } from "@/components/ui/layout-wrappers";
+import { cn } from "@/lib/utils";
 import { CONTENT } from "@/data/content";
 
 type Project = (typeof CONTENT.en.portfolio.projects)[number];
 
 const PROJECTS = CONTENT.en.portfolio.projects as Project[];
-const AUTOPLAY_MS = 6000;
 
-const slide = {
-  enter: (dir: number) => ({ x: dir > 0 ? 420 : -420, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (dir: number) => ({ x: dir > 0 ? -420 : 420, opacity: 0 }),
-};
+// Projects without a public URL (private client systems) lead to the calendar
+const linkProps = (project: Project) =>
+  project.href
+    ? { href: project.href, target: "_blank", rel: "noopener noreferrer" }
+    : { href: "/contact#book-calendar" };
 
-function Visual({ project }: { project: Project }) {
-  if (project.visualType === "image") {
-    return (
+function Visual({ project, sizes, priority }: { project: Project; sizes: string; priority?: boolean }) {
+  const [first, second] = project.images;
+
+  // Second screenshot sits on top and fades in on hover (or keyboard focus)
+  // of the surrounding `group`. Touch devices never hover, so they keep the first.
+  return (
+    <>
       <Image
-        src={project.visualData}
-        alt={project.name}
+        src={first}
+        alt={`Screenshot of ${project.name}`}
         fill
-        priority
-        sizes="(max-width: 1280px) 100vw, 60vw"
+        priority={priority}
+        sizes={sizes}
         className="object-cover object-top"
       />
-    );
-  }
+      <Image
+        src={second}
+        alt=""
+        fill
+        sizes={sizes}
+        className="object-cover object-top opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
+      />
+    </>
+  );
+}
 
-  const isNext = project.visualType === "next";
+function Tile({ project, className, sizes, priority }: { project: Project; className?: string; sizes: string; priority?: boolean }) {
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8">
-      {isNext && <Sparkles className="w-10 h-10 text-brand-teal mb-4" />}
-      <span className={isNext ? "text-[20px] font-bold text-white" : "text-[56px] font-black tracking-tight text-white leading-none"}>
-        {project.visualData}
-      </span>
-      {!isNext && (
-        <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#555] mt-4">
-          Private client system
-        </span>
-      )}
+    <Link {...linkProps(project)} className={cn("group flex flex-col", className)}>
+      <div className="relative flex-1 min-h-0 aspect-[2/1] lg:aspect-auto overflow-hidden rounded-lg border border-brand-border bg-brand-surface">
+        <Visual project={project} sizes={sizes} priority={priority} />
+      </div>
+      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-x-4 gap-y-0.5 pt-3">
+        <span className="text-[15px] font-semibold text-white shrink-0">{project.name}</span>
+        <span className="text-[13px] text-brand-subtle sm:text-right truncate">{project.category}</span>
+      </div>
+    </Link>
+  );
+}
+
+// Home page: three real projects, one large and two stacked beside it.
+export function WorkShowcase() {
+  const [lead, ...rest] = ["vhelp", "emporium-tailors", "jms"].map(
+    (id) => PROJECTS.find((p) => p.id === id)!
+  );
+
+  return (
+    <div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-5 gap-y-8">
+        <Link {...linkProps(lead)} className="group lg:col-span-2 flex flex-col">
+          <div className="relative aspect-[2/1] overflow-hidden rounded-lg border border-brand-border bg-brand-surface">
+            <Visual project={lead} sizes="(max-width: 1024px) 100vw, 820px" priority />
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-x-4 gap-y-0.5 pt-3">
+            <span className="text-[15px] font-semibold text-white shrink-0">{lead.name}</span>
+            <span className="text-[13px] text-brand-subtle sm:text-right truncate">{lead.category}</span>
+          </div>
+        </Link>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 lg:grid-rows-2 gap-x-5 gap-y-8 lg:gap-y-5">
+          {rest.map((project) => (
+            <Tile key={project.id} project={project} sizes="(max-width: 640px) 100vw, 420px" />
+          ))}
+        </div>
+      </div>
+
+      <Link href="/work" className="group/all inline-flex items-center gap-2 mt-6 py-2 text-[15px] font-medium text-white hover:text-brand-teal transition-colors">
+        All work
+        <ArrowRight className="w-4 h-4 transition-transform group-hover/all:translate-x-1" />
+      </Link>
     </div>
   );
 }
 
+// /work: every project, one per row, nothing hidden behind a carousel.
 export function Portfolio({ className }: { className?: string }) {
-  const [index, setIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
-  const [paused, setPaused] = useState(false);
-
-  const go = useCallback((dir: number) => {
-    setDirection(dir);
-    setIndex((i) => (i + dir + PROJECTS.length) % PROJECTS.length);
-  }, []);
-
-  useEffect(() => {
-    if (paused) return;
-    const timer = setInterval(() => go(1), AUTOPLAY_MS);
-    return () => clearInterval(timer);
-  }, [go, paused]);
-
-  const project = PROJECTS[index];
-  const href = project.href ?? "#book-calendar";
-
   return (
     <Section id="portfolio" className={className}>
       <Container>
-        <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#555] mb-6">
-          Case Studies
-        </div>
-        <h2 className="section-headline mb-4 max-w-[620px]">{CONTENT.en.portfolio.title}</h2>
-        <p className="text-[17px] text-brand-muted max-w-[560px] mb-12">{CONTENT.en.portfolio.sub}</p>
+        <h1 className="display-headline mb-6">{CONTENT.en.portfolio.title}</h1>
+        <p className="text-[17px] md:text-[19px] text-brand-muted max-w-[34rem] leading-relaxed">
+          {CONTENT.en.portfolio.sub}
+        </p>
 
-        <div
-          className="relative"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-        >
-          {/* Screenshots are ~2:1 (a browser window), so the visual keeps that
-              ratio at every width and is centred in the panel — the old
-              full-height panel was ~1.6:1 and cropped a quarter off the sides. */}
-          <div className="relative overflow-hidden rounded-3xl border border-brand-border bg-brand-surface min-h-[560px] sm:min-h-[620px] xl:min-h-[400px]">
-            <AnimatePresence initial={false} custom={direction} mode="wait">
-              <motion.div
-                key={project.id}
-                custom={direction}
-                variants={slide}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ x: { type: "spring", stiffness: 260, damping: 30 }, opacity: { duration: 0.2 } }}
-                className="flex flex-col xl:flex-row xl:items-center xl:absolute xl:inset-0"
+        <ul className="mt-14 md:mt-20 border-t border-brand-border">
+          {PROJECTS.map((project, i) => (
+            <li
+              key={project.id}
+              className="grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-8 lg:gap-14 py-10 md:py-14 border-b border-brand-border lg:items-center"
+            >
+              <Link
+                {...linkProps(project)}
+                aria-label={`${project.name}: ${project.cta}`}
+                className="group relative block aspect-[2/1] overflow-hidden rounded-lg border border-brand-border bg-brand-surface"
               >
-                {/* Visual — always 2:1, never stretched to fill */}
-                <div className="relative w-full xl:w-[60%] aspect-[2/1] bg-[#0c0c0c] overflow-hidden shrink-0">
-                  <Visual project={project} />
-                </div>
+                <Visual project={project} sizes="(max-width: 1024px) 100vw, 700px" priority={i === 0} />
+              </Link>
 
-                {/* Copy */}
-                <div className="xl:w-[40%] p-8 md:p-10 flex flex-col justify-center">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-brand-teal mb-3">
-                    {project.category}
-                  </span>
+              <div>
+                <h2 className="font-heading text-[28px] md:text-[34px] font-semibold text-white leading-tight tracking-tight">
+                  {project.name}
+                </h2>
+                <p className="mt-2 text-[14px] text-brand-teal">{project.category}</p>
+                <p className="mt-5 text-[16px] text-brand-muted leading-relaxed max-w-[32rem]">
+                  {project.desc}
+                </p>
+                <p className="mt-5 text-[14px] text-brand-subtle">{project.stats.join("  ·  ")}</p>
 
-                  <h3 className="text-[26px] md:text-[30px] font-bold text-white leading-tight mb-4">
-                    {project.name}
-                  </h3>
-
-                  <p className="text-[15px] text-brand-muted leading-relaxed mb-6">
-                    {project.desc}
-                  </p>
-
-                  <ul className="flex flex-wrap gap-2 mb-8">
-                    {project.stats.map((stat) => (
-                      <li
-                        key={stat}
-                        className="text-[11px] font-semibold text-[#888] border border-brand-border rounded-full px-3 py-1.5"
-                      >
-                        {stat}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Link
-                    href={href}
-                    {...(project.href ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    className="btn-wipe inline-flex items-center gap-2 self-start bg-brand-teal text-black font-bold text-[14px] h-11 px-6 rounded-full glow-teal"
-                  >
-                    {project.cta}
-                    <ArrowUpRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* Controls */}
-          <div className="flex items-center justify-between mt-6">
-            <div className="flex gap-2">
-              {PROJECTS.map((p, i) => (
-                <button
-                  key={p.id}
-                  onClick={() => { setDirection(i > index ? 1 : -1); setIndex(i); }}
-                  aria-label={`Show ${p.name}`}
-                  aria-current={i === index}
-                  className={`h-2.5 rounded-full transition-all duration-300 ${i === index ? "w-8 bg-brand-teal" : "w-2.5 bg-brand-border hover:bg-[#444]"}`}
-                />
-              ))}
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                onClick={() => go(-1)}
-                aria-label="Previous project"
-                className="w-11 h-11 rounded-full border border-brand-border bg-brand-surface text-white flex items-center justify-center transition-colors hover:bg-brand-teal hover:text-black hover:border-brand-teal"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => go(1)}
-                aria-label="Next project"
-                className="w-11 h-11 rounded-full border border-brand-border bg-brand-surface text-white flex items-center justify-center transition-colors hover:bg-brand-teal hover:text-black hover:border-brand-teal"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </div>
+                <Link
+                  {...linkProps(project)}
+                  className="inline-flex items-center gap-1.5 mt-5 py-2 text-[15px] font-semibold text-white hover:text-brand-teal transition-colors"
+                >
+                  {project.cta}
+                  <ArrowUpRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </li>
+          ))}
+        </ul>
       </Container>
     </Section>
   );

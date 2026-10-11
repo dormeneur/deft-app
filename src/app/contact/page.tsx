@@ -5,8 +5,8 @@ import { FinalCTA } from "@/components/sections/FinalCTA";
 import { FloatingContact } from "@/components/ui/FloatingContact";
 
 export const metadata = {
-  title: "Contact Us",
-  description: "Get in touch with Deft for a free consultation. Book a call, send us a message, or reach out directly via WhatsApp or LINE.",
+  title: "Contact",
+  description: "Send Deft a message, book an intro call, or reach us on LINE or WhatsApp.",
 };
 
 export default function ContactPage() {

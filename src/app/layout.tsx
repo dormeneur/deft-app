@@ -1,39 +1,38 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Sarabun } from "next/font/google";
+import { Bricolage_Grotesque, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { Toaster } from "sonner";
 import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
-const cormorantGaramond = Cormorant_Garamond({
-  variable: "--font-cormorant",
+const display = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
-const sarabun = Sarabun({
-  variable: "--font-sarabun",
+const sans = Instrument_Sans({
+  variable: "--font-instrument",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
 export const viewport: Viewport = {
-  themeColor: "#0F766E",
+  themeColor: "#000000",
 };
 
 export const metadata: Metadata = {
   title: {
     template: "%s | Deft",
-    default: "Deft | Premium Web Design Agency in Bangkok",
+    default: "Deft | Web design studio in Bangkok",
   },
-  description: "We build fast, high-converting websites for Thai businesses. Minimalist design, affordable pricing, and real monthly support.",
+  description: "Deft is a small Bangkok studio that builds websites, booking systems and business tools. You see a working demo of your site before you pay anything.",
   keywords: ["web design bangkok", "website agency thailand", "local business websites", "react development", "custom websites bangkok"],
   openGraph: {
-    title: "Deft | Premium Web Design Agency in Bangkok",
-    description: "Your business, beautifully online. Premium, fast, and affordable websites for local businesses in Thailand.",
+    title: "Deft | Web design studio in Bangkok",
+    description: "See a working demo of your new website before you pay anything.",
     url: "https://deft-websites.vercel.app",
     siteName: "Deft",
     locale: "en_US",
@@ -41,8 +40,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Deft | Premium Web Design",
-    description: "Your business, beautifully online.",
+    title: "Deft | Web design studio in Bangkok",
+    description: "See a working demo of your new website before you pay anything.",
   },
 };
 
@@ -82,13 +81,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorantGaramond.variable} ${sarabun.variable} h-full scroll-smooth`}
+      className={`${display.variable} ${sans.variable} h-full`}
     >
       <body className="min-h-full flex flex-col font-sans">
         <LanguageProvider>
-          {children}
+          <SmoothScroll>{children}</SmoothScroll>
           <Toaster position="bottom-center" toastOptions={{
-            className: 'bg-brand-bg border-brand-border text-brand-text font-sans shadow-xl'
+            className: 'bg-brand-surface border-brand-border text-brand-text font-sans'
           }} />
         </LanguageProvider>
         <Script id="schema-local-business" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />

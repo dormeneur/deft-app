@@ -34,7 +34,7 @@ export const SOCIALS = [
     },
     {
         title: "WhatsApp",
-        handle: "+66 063 823 2303",
+        handle: "+66 63 823 2303",
         href: "https://wa.me/66638232303",
         Icon: WhatsappIcon,
         brand: "#25D366",

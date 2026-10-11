@@ -14,17 +14,19 @@ function PaymentSuccessToast() {
   const searchParams = useSearchParams();
   useEffect(() => {
     if (searchParams.get("status") === "success") {
-      toast.success("Payment received! We'll be in touch within 24 hours. 🎉");
+      toast.success("Payment received. We'll be in touch within 24 hours.");
       window.history.replaceState({}, "", "/pricing");
     }
   }, [searchParams]);
   return null;
 }
 
-// ponytail: 3 simple dark cards, ONE centered CTA at bottom — exactly Unio's layout
-export function Pricing({ className }: { className?: string }) {
+// Three plans side by side on one ruled row, and a single CTA underneath —
+// the decision is "talk to us", not "pick a tier and check out".
+export function Pricing({ className, headingAs: Heading = "h2" }: { className?: string; headingAs?: "h1" | "h2" }) {
   const { lang } = useLanguage();
   const { openBooking } = useBooking();
+  const labels = PRICING[lang];
 
   const handleCTA = () => {
     track.ctaClick("pricing_book_demo", "pricing");
@@ -32,61 +34,51 @@ export function Pricing({ className }: { className?: string }) {
   };
 
   return (
-    <Section id="pricing" className={className}>
+    <Section id="pricing" variant={Heading === "h1" ? "base" : "divide"} className={className}>
       <Suspense fallback={null}><PaymentSuccessToast /></Suspense>
       <Container>
 
-        <h2 className="section-headline mb-14">Plans</h2>
+        <Heading className={Heading === "h1" ? "display-headline" : "section-headline"}>Pricing</Heading>
+        <p className="mt-4 text-[17px] text-brand-muted max-w-[34rem] leading-relaxed">{labels.subtitle}</p>
 
-        {/* 3 cards — transparent body, darker header, outline border */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+        <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 border-t border-brand-border">
           {PRICING.plans.map((plan) => {
             const p = plan[lang];
             return (
               <div
                 key={plan.id}
-                className="border border-[#222] rounded-2xl overflow-hidden flex flex-col"
+                className="py-9 md:py-10 md:px-8 md:first:pl-0 md:last:pr-0 border-b border-brand-border md:border-b-0 md:border-l md:first:border-l-0"
               >
-                {/* Header — darker block, matches Unio */}
-                <div className="bg-[#141414] px-6 pt-6 pb-5">
-                  <h3 className="text-[17px] font-bold text-white mb-1.5">{p.name}</h3>
-                  <p className="text-[13px] text-[#666] leading-relaxed">{p.tagline}</p>
-                </div>
+                <h3 className="font-heading text-[22px] font-semibold text-white tracking-tight">{p.name}</h3>
+                <p className="mt-2 text-[15px] text-brand-muted leading-relaxed md:min-h-[3rem]">{p.tagline}</p>
 
-                {/* Body — transparent (bg-black), just the outline of the card */}
-                <div className="bg-black px-6 pt-5 pb-6 flex-1 flex flex-col">
-                  {/* Price */}
-                  <div className="flex items-baseline gap-1.5 mb-0.5">
-                    <span className="text-[24px] font-black text-white leading-none">{p.upfront}</span>
-                    <span className="text-[11px] text-[#555]">upfront</span>
-                  </div>
-                  <p className="text-[12px] text-[#555] mb-5">{p.monthly} / month</p>
+                <p className="mt-7 flex items-baseline gap-2">
+                  <span className="font-heading text-[44px] font-semibold text-white leading-none tracking-tight tabular-nums">
+                    {p.upfront}
+                  </span>
+                  <span className="text-[14px] text-brand-subtle">{labels.upfrontLabel}</span>
+                </p>
+                <p className="mt-2 text-[15px] text-brand-muted tabular-nums">
+                  then {p.monthly} {labels.monthLabel}
+                </p>
 
-                  {/* Features */}
-                  <ul className="space-y-2.5 flex-1">
-                    {p.features.map((feat, i) => (
-                      <li key={i} className="flex items-start gap-2.5">
-                        <Check className="w-3.5 h-3.5 text-brand-teal shrink-0 mt-0.5" />
-                        <span className="text-[13px] text-[#777]">{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <ul className="mt-8 space-y-3">
+                  {p.features.map((feat) => (
+                    <li key={feat} className="flex items-start gap-3 text-[15px] text-brand-muted">
+                      <Check className="w-4 h-4 text-brand-teal shrink-0 mt-[3px]" aria-hidden="true" />
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
               </div>
             );
           })}
         </div>
 
-        {/* ONE centered CTA — Unio's exact pattern */}
-        <div className="text-center pt-2 pb-2">
-          <p className="text-[15px] text-brand-muted mb-6">
-            Let&apos;s see how we can fix the issues holding your business back from more customers.
-          </p>
-          <button
-            onClick={handleCTA}
-            className="btn-wipe inline-flex items-center justify-center bg-brand-teal text-black h-12 px-9 rounded-full font-bold text-[15px] glow-teal"
-          >
-            Book an Intro Call
+        <div className="md:border-t border-brand-border pt-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <p className="text-[17px] text-white max-w-[34rem]">{labels.bookDemoLabel}</p>
+          <button onClick={handleCTA} className="btn-wipe btn-primary shrink-0 self-start">
+            Book an intro call
           </button>
         </div>
       </Container>

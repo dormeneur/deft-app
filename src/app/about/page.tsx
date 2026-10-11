@@ -7,14 +7,14 @@ import { FloatingContact } from "@/components/ui/FloatingContact";
 
 export const metadata = {
   title: "About",
-  description: "Who's behind Deft, and what the studio actually does — a small Bangkok team that ships websites, not an agency that bills for meetings.",
+  description: "Who is behind Deft and how the studio works: a small Bangkok team that ships websites, not an agency that bills for meetings.",
 };
 
 export default function AboutPage() {
   return (
     <main className="flex-1 flex flex-col">
       <Navbar />
-      <FounderSnippet className="pt-32 pb-20 md:pt-40 md:pb-28" />
+      <FounderSnippet headingAs="h1" className="pt-32 pb-20 md:pt-40 md:pb-28" />
       <About />
       <FinalCTA />
       <Footer />

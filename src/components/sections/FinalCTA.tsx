@@ -4,14 +4,12 @@ import { useEffect } from "react";
 import Cal, { getCalApi } from "@calcom/embed-react";
 import { Container } from "@/components/ui/layout-wrappers";
 import { track } from "@/lib/tracking";
-import { useBooking } from "@/components/providers/BookingProvider";
 
 const CAL_NAMESPACE = "project-discussion";
 const CAL_LINK = "adityabharti/project-discussion";
 
+// Owns #book-calendar — every "book a call" button on the site scrolls here.
 export function FinalCTA() {
-    const { openBooking } = useBooking();
-
     useEffect(() => {
         (async () => {
             try {
@@ -23,26 +21,17 @@ export function FinalCTA() {
     }, []);
 
     return (
-        <section id="book" className="bg-black border-t border-[#1f1f1f]">
+        <section id="book" className="bg-black border-t border-brand-border">
             <Container className="py-20 md:py-28">
 
-                {/* CTA copy — pure black bg, no inner card */}
-                <div className="text-center mb-10">
-                    <h2 className="display-headline mb-4">
-                        Ready to stop leaving money on the table?
-                    </h2>
-                    <p className="text-[17px] text-[#888] max-w-[500px] mx-auto mb-8">
-                        Let&apos;s see how we can fix the issues holding you back from driving more revenue today.
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16 lg:items-end mb-12">
+                    <h2 className="display-headline max-w-[12ch]">Pick a time that suits you.</h2>
+                    <p className="text-[17px] md:text-[19px] text-brand-muted leading-relaxed max-w-[32rem]">
+                        An intro call with no commitment. Tell us what you need and
+                        we&apos;ll tell you honestly whether we can help.
                     </p>
-                    <button
-                        onClick={() => { track.ctaClick("final_cta_book", "final_cta"); openBooking("final_cta"); }}
-                        className="btn-wipe inline-flex items-center justify-center bg-brand-teal text-black font-bold text-[16px] h-12 px-10 rounded-full glow-teal"
-                    >
-                        Book an Intro Call
-                    </button>
                 </div>
 
-                {/* Cal.com inline — every "book a call" button on the page scrolls here */}
                 <div id="book-calendar" className="scroll-mt-24">
                     <Cal
                         namespace={CAL_NAMESPACE}
