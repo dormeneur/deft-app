@@ -64,6 +64,19 @@ export function Contact({ className }: { className?: string }) {
         },
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
       );
+      // Customer confirmation. Best-effort: the enquiry already reached us, so a
+      // failure here must not turn the success toast into an error.
+      const replyTemplate = process.env.NEXT_PUBLIC_EMAILJS_REPLY_TEMPLATE_ID;
+      if (replyTemplate) {
+        emailjs
+          .send(
+            process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+            replyTemplate,
+            { from_name: data.name, user_email: data.email },
+            process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+          )
+          .catch((e: unknown) =>console.error("EmailJS auto-reply failed:", e));
+      }
       toast.success(t.contact.sent);
       reset();
     } catch (error: unknown) {
