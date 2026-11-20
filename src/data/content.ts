@@ -12,7 +12,27 @@ export const CONTENT = {
         { title: "Local business sites" },
         { title: "Booking & e-commerce" },
         { title: "ERP & business software" },
+        { title: "AI assistants" },
+        { title: "Web scraping" },
+        { title: "Dashboards" },
+        { title: "Automations" },
+        { title: "Reverse engineering" },
         { title: "Redesigns & speed fixes" },
+      ],
+    },
+    // Home-page "Beyond websites" rows (Capabilities). One row per kind of build.
+    capabilities: {
+      title: "Websites are where most clients start.",
+      sub: "The same team builds the software behind them: business tools, AI, data and the automations that join it all up.",
+      items: [
+        { title: "Custom software, built agile", body: "Business tools shipped in short sprints. You use working software early and steer it as it grows, instead of signing off a spec and waiting." },
+        { title: "AI features", body: "Assistants that answer from your own data: stock, bookings, policies. A customer asks in plain words and gets a straight reply." },
+        { title: "AI model training", body: "When an off-the-shelf model is not good enough, we train or fine-tune one on your data and wire it into your product." },
+        { title: "Web scraping & data", body: "Prices, listings or records pulled from the web into a clean sheet or database, on a schedule, without copy and paste." },
+        { title: "Dashboards & analytics", body: "Sales, stock and bookings on one screen, so the numbers you check every morning are already there." },
+        { title: "Automations", body: "The repetitive jobs, done for you. A LINE message becomes a job card; a paid order sends its own invoice." },
+        { title: "Reverse engineering", body: "An old system with no documentation? We work out how it behaves and what its data means, then connect to it or replace it." },
+        { title: "Mobile apps", body: "Android and Flutter apps, like VHELP for VIT Chennai students and the sales app for the Jewelry Management System." },
       ],
     },
     how: {

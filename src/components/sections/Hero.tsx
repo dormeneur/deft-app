@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import Link from "next/link";
 import { useBooking } from "@/components/providers/BookingProvider";
 import { track } from "@/lib/tracking";
@@ -14,9 +14,40 @@ const step = (i: number) => ({ "--i": i }) as CSSProperties;
 export function Hero() {
   const { openBooking } = useBooking();
 
+  // Background film: muted, looped, and paused outright under reduced motion
+  // (the poster frame stays). Phones get the 720p encode.
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) videoRef.current?.pause();
+  }, []);
+
   return (
-    <section id="hero" className="bg-black pt-16">
-      <Container className="pt-10 pb-20 md:pt-14 md:pb-28">
+    <section id="hero" className="bg-black">
+      {/* Full-bleed video band. It runs under the transparent navbar; the
+          overlay darkens the left (where the copy sits) and fades the bottom
+          into the page so the band has no hard edge. */}
+      <div className="relative isolate overflow-hidden flex items-end min-h-[86svh] md:min-h-[92svh]">
+        <video
+          ref={videoRef}
+          className="absolute inset-0 -z-20 h-full w-full object-cover md:[mask-image:linear-gradient(90deg,transparent_18%,black_62%)]"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/hero-poster.webp"
+          aria-hidden="true"
+        >
+          <source src="/hero-720.mp4" type="video/mp4" media="(max-width: 767px)" />
+          <source src="/hero-1080.mp4" type="video/mp4" />
+        </video>
+        {/* Desktop: the film fades in from the right (mask above) so its own
+            on-screen type never sits under the headline. Phones crop the
+            centre, so they get a heavier flat overlay instead. */}
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-black/65 md:bg-black/25" />
+        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/2 -z-10 bg-gradient-to-t from-black via-black/60 to-transparent" />
+
+      <Container className="w-full pt-32 pb-14 md:pb-20">
 
         <h1 className="display-headline rise max-w-[15ch]" style={step(0)}>
           See your new website before you pay for it.
@@ -24,7 +55,7 @@ export function Hero() {
 
         {/* One reading column: headline, pitch, action. The CTA sits right
             under the sentence it answers instead of across the page from it. */}
-        <p className="rise mt-7 md:mt-9 max-w-[36rem] text-[17px] md:text-[19px] text-brand-muted leading-relaxed text-pretty" style={step(1)}>
+        <p className="rise mt-7 md:mt-9 max-w-[36rem] text-[17px] md:text-[19px] text-white leading-relaxed text-pretty" style={step(1)}>
           Deft is a small Bangkok studio. We design and build a working demo
           of your site first. Like it, and it goes live within a week. If
           not, you owe nothing.
@@ -76,7 +107,11 @@ export function Hero() {
           </Link>
         </div>
 
-        <div className="rise mt-14 md:mt-16" style={step(3)}>
+      </Container>
+      </div>
+
+      <Container className="pt-6 pb-20 md:pt-8 md:pb-28">
+        <div className="rise" style={step(3)}>
           <WorkShowcase />
         </div>
       </Container>

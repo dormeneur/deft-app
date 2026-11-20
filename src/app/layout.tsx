@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: "%s | Deft",
     default: "Deft | Web design studio in Bangkok",
   },
-  description: "Deft is a small Bangkok studio that builds websites, booking systems and business tools. You see a working demo of your site before you pay anything.",
+  description: "Deft is a small Bangkok studio that builds websites, business software, AI features and automations. You see a working demo of your site before you pay anything.",
   keywords: ["web design bangkok", "website agency thailand", "local business websites", "react development", "custom websites bangkok"],
   openGraph: {
     title: "Deft | Web design studio in Bangkok",

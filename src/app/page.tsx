@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { Services } from "@/components/sections/Services";
 import { HowItWorks } from "@/components/sections/HowItWorks";
+import { Capabilities } from "@/components/sections/Capabilities";
 import { FounderSnippet } from "@/components/sections/FounderSnippet";
 import { Pricing } from "@/components/sections/Pricing";
 import { FAQ } from "@/components/sections/FAQ";
@@ -16,6 +17,7 @@ export default function Home() {
       <Hero />
       <Services />
       <HowItWorks />
+      <Capabilities />
       <Pricing />
       <FounderSnippet />
       <FAQ />
