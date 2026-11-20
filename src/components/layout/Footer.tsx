@@ -31,7 +31,7 @@ export function Footer() {
 
           <div>
             <p className="font-heading text-[22px] font-semibold text-white leading-snug tracking-tight max-w-[340px]">
-              A small Bangkok studio that builds websites and business software.
+              A small Bangkok studio that builds websites, software and AI.
             </p>
             <SocialLinks className="mt-7" />
           </div>

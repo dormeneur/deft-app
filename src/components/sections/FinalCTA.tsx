@@ -41,6 +41,15 @@ export function FinalCTA() {
                     />
                 </div>
 
+                {/* Always shown, and the only thing left if the calendar embed
+                    is blocked or slow. */}
+                <p className="mt-8 text-[16px] text-brand-muted">
+                    Prefer not to book a slot?{" "}
+                    <a href="mailto:work.adityabharti@gmail.com" className="link-rule text-white">Email us</a>,{" "}
+                    <a href="https://line.me/ti/p/~aditya_bharti" target="_blank" rel="noopener noreferrer" className="link-rule text-white">message on LINE</a>{" "}
+                    or call <a href="tel:+66638232303" className="link-rule text-white">+66 63 823 2303</a>.
+                </p>
+
             </Container>
         </section>
     );

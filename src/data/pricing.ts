@@ -45,7 +45,7 @@ export const PRICING: PricingConfig = {
     popularBadge: "Most Popular",
     upfrontLabel: "upfront",
     monthLabel: "/ month",
-    bookDemoLabel: "Not sure which plan fits? See your website demo first — it's free.",
+    bookDemoLabel: "Not sure which plan fits, or building more than a website? Tell us what you need on a call.",
     bookDemoCta: "Book a Free Demo",
   },
   th: {

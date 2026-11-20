@@ -13,8 +13,8 @@ export function About({ className }: { className?: string }) {
 
           <div className="space-y-5 text-[17px] text-brand-muted leading-relaxed max-w-[36rem]">
             <p>
-              Deft builds websites, booking systems and internal tools for
-              businesses in Bangkok. No account managers and no discovery
+              Deft builds websites, business software, AI features and
+              automations for businesses in Bangkok. No account managers and no discovery
               retainer. You talk to the person writing the code.
             </p>
             <p>
